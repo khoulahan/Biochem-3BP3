@@ -13,7 +13,7 @@
 <a name="intro"></a>
 ## Introduction
 
-The goal of this lab is to review the analysis of RNA-Seq data using the public Galaxy platform.
+The goal of this lab is to review the analysis of RNA-Seq data.
 
 **Lectures** - [Lecture 9](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%208%20-%20RNA-Seq.pptx) RNA-Seq, ChIP-Seq, Bisulfite-Seq ([~34 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcZMiU9kvzNEsvLCbkX9aiAB92qPdecMT2-SbmjLDGtPUg))
 
@@ -28,16 +28,12 @@ The goal of this lab is to review the analysis of RNA-Seq data using the public 
 * [Transcript Assembly](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcbU-9ZwW2BKhMKQanVXkEgBxt4BZxP0My4mj3SzReYCtw) ~6 minutes
 * [Differential Gene Analysis & Interpretation](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Ee8IQz_I8c9BiFfZ-98JSksBY30ATte94sccEwi2aoX6Wg) ~13 minutes
 
-**Background Reading** (optional)
-* Bock. 2012. Analysing and interpreting DNA methylation data. [Nat Rev Genet. 13:705-19](https://www.ncbi.nlm.nih.gov/pubmed/?term=22986265)
-* Liu et al. 2010. Q&A: ChIP-seq technologies and the study of gene regulation. [BMC Biol. 8:56](https://www.ncbi.nlm.nih.gov/pubmed/?term=20529237)
 
 **Links**
-* http://usegalaxy.org - this lab will be performed using the public Galaxy website, which was introduced in [Lab 6](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_6_Genome_Assembly)
-* https://david.ncifcrf.gov - we will also use DAVID, which was introduced in [Lab 4](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_4_Ontologies)
+
 
 **Computer Resources**
-* You can complete this entire lab by using your web browser
+* The lab can be completed on the *cluster*. Refer back to Lab 1 and 4 to refresh using command line arguments in Linux and R.
 
 **Grading**
 * Questions are for your learning and are not graded
@@ -48,7 +44,7 @@ The goal of this lab is to review the analysis of RNA-Seq data using the public 
 <a name="qc"></a>
 ## Setting Up
 
-Today’s lab will use the public server of the Galaxy project, http://usegalaxy.org, using the account you set up previously. Upload all the data files via the Paste/Fetch tool (manually indicating the file type):
+Today’s lab will use the *cluster* . Upload all the data files via the Paste/Fetch tool (manually indicating the file type):
 
 **Annotation (GTF format) File(s):**
 
@@ -81,9 +77,17 @@ https://dl.dropboxusercontent.com/s/czyd9wdrih4givw/HLE_Ctrl_3_reverse.fastq.gz?
 
 We are going to examine the response of the human transcriptome in a human lens epithelial cell line (part of the eye) exposed to Cadmium, as preliminary microarray work has suggested Cadmium exposure, via the MTF-1 transcription factor, impacts lens development and maintenance. The experiment is RNA-Seq of three Cadmium exposed replicates and 3 Control replicates, using the GRCh38 version of the human genome annotation as reference. The RNA-Seq was performed using an Illumina HiSeq with 2 x 50 bp mate pair sequencing.
 
-We are going to manipulate these data files multiple times, so download the [Sample Tracking.xlsx](Sample_Tracking.xlsx) spreadsheet to keep track of each step. Start by recording the identifiers of the upload boxes.
+We are going to start by using the FastQC tool to examine the quality of some of the RNA-Seq data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y).
 
-Use the FastQC tool to examine the quality of some of the RNA-Seq data. As before, details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y), or you can review [Lab 6](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_6_Genome_Assembly).
+```bash
+# create directory to store initial fastqc run
+mkdir raw_fastqc
+# run fastqc on foward fastq
+fastqc HLE_Cd_1_forward.fastq.gz
+# move output into folder
+mv HLE_Cd_1_forward_fastqc.html raw_fastqc/
+mv HLE_Cd_1_forward_fastqc.zip raw_fastqc/
+```
 
 **Question #1. How many mRNA were sequenced from each replicate and does this data need any adaptor removal or quality trimming?**
 
@@ -92,11 +96,28 @@ Use the FastQC tool to examine the quality of some of the RNA-Seq data. As befor
 <a name="clean"></a>
 ## Data Cleaning
 
-Even if the data as a whole passed FASTQC, quality trimming and filtering is still highly recommended to remove or trim individual sequences of poor quality. First, convert the data to Galaxy's preferred FASTQ format using *FASTQ Groomer* (default settings) and then run *Trimmomatic* (paired-end with separate input files, plus ILLUMINACLIP with TruSeq3 for paired-end MiSeq or HiSeq) on all the samples, using the [Sample Tracking.xlsx](Sample_Tracking.xlsx) spreadsheet to keep track of your results. For example:
+Even if the data as a whole passed FASTQC, quality trimming and filtering is still highly recommended to remove or trim individual sequences of poor quality. Run *Trimmomatic* (paired-end with separate input files, plus ILLUMINACLIP with TruSeq3 for paired-end MiSeq or HiSeq) on all the samples. For example:
 
-![trimmomatic](./trimmomatic.jpg)
+```bash
+# create directory to store trimmed data in
+mkdir trimmomatic
+# run trimmomatic in paired-end mode
+trimmomatic PE -threads 1 \ # uses a single thread
+HLE_Cd_1_forward.fastq.gz \ # input fastq forward
+HLE_Cd_1_reverse.fastq.gz \ # input fastq reverse
+trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \ # output paired fastq forward
+trimmomatic/HLE_Cd_1_forward_trimmed_unpaired.fq.gz \ # output unpaired fastq forward
+trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \ # output paired fastq reverse
+trimmomatic/HLE_Cd_1_reverse_trimmed_unpaired.fq.gz \ # output unpaired fastq reverse
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:8:True \ # trims adapter
+SLIDINGWINDOW:4:20 # trims low quality bases
+```
 
-**Note**, Trimmomatic under these settings creates both **paired** and **unpaired** output. We only want to use paired reads in our data, so will ignore the unpaired files.
+`ILLUMINACLIP:TruSeq3-PE.fa:2:30:10` removes the adapters for Illumina TruSeq3 sequencing which is the method used to generate these data. 
+
+`SLIDINGWINDOW:4:15` scans the read with a 4-base wide sliding window, cutting where the average quality per base drops below 15.
+
+**Note**: Trimmomatic under these settings creates both **paired** and **unpaired** output. We only want to use paired reads in our data, so will ignore the unpaired files.
 
 **Question #2. Run *FASTQC* on a couple of your samples to see if the data has changed in quality. Has anything improved?**
 
@@ -106,64 +127,94 @@ Even if the data as a whole passed FASTQC, quality trimming and filtering is sti
 <a name="mapping"></a>
 ## Mapping Reads to the Human Genome
 
-Before we can interpret these data, we need to map the FASTQ reads to the reference human genome (hg38). We cannot use the standard Burrows-Wheeler Transform software BWA or Bowtie, since RNA-Seq data needs to be corrected for introns and exons. Instead, we will use the HiSAT2 tool, which can handle splice junction boundaries as well as control for fragment sizes. 
+Before we can interpret these data, we need to map the FASTQ reads to the reference human genome (hg38). We cannot use the standard Burrows-Wheeler Transform software BWA or Bowtie, since RNA-Seq data needs to be corrected for introns and exons. Instead, we will use [HISAT2](https://daehwankimlab.github.io/hisat2/main/), which can handle splice junction boundaries as well as control for fragment sizes.
 
-Perform *HiSAT2* read mapping for each sample, using the hg38 built in reference: *Human (Homo sapiens) (b38): hg38 Canonical* on **each mate pair**. FASTA/Q file #1 = forward = left, FASTA/Q file #2 = reverse = right. For strand settings, use the default *Unstranded*. For example:
+The first step is download the [reference files](https://daehwankimlab.github.io/hisat2/download/) required by *HISAT2*. 
 
-![HiSAT2](./HiSAT2.jpg)
+```bash
+# create directory to alignments
+mkdir hisat2
+mkdir hisat2/genome_dir
+# navigate to directory
+cd hisat2/genome_dir
+# download reference files
+wget https://genome-idx.s3.amazonaws.com/hisat/grch38_genome.tar.gz
+# extract files
+tar -xvf grc38_genome.tar.gz
+```
+
+Perform *HISAT2* read mapping for each sample, using the reference files you just downloaded. The command is provided below, however, please submit as a job to slurm. **Do not run on head node.** It is recommended to run the alignment with 6GB of memory requested. As a reminder of how to create a *sbatch script* please refer back to Lab 1. 
+
+```bash
+# run HISAT2 to align reads to reference genome
+hisat2 --add-chrname -x hisat2/genome_dir/grch38/genome \
+-1 trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \
+-2 trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \
+-S hisat2/HLE_Cd_1.sam
+```
+
+The [SAM](https://samtools.github.io/hts-specs/SAMv1.pdf) output is standard file format for sequencing alignment. However, the SAM file format is uncompressed and can take up a lot of space. Thus, we can convert SAM files to BAM files which are the binary equivalent.
+
+```bash
+# convert sam file to bam file
+samtools view -bS hisat2/HLE_Cd_1.sam > hisat2/HLE_Cd_1.bam
+# once the file is coverted, we can remove the original sam file
+rm hisat2/HLE_Cd_1.sam
+```
+
+
+Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out*.
+
 
 > Flash Update - Tn-Seq
 
-Record the results identifiers in the the [Sample Tracking.xlsx](Sample_Tracking.xlsx) spreadsheet.
-
-**Problem #2. HiSAT2 creates a BAM file that contains the alignment information. Click on the HiSAT2 results for HLE Ctrl 1 replicate and then the *i* icon to access the STDERR. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
+**Problem #2. STAR creates a BAM file that contains the alignment information. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
 
 <a name="transcripts"></a>
 ## Transcript Assembly
 
 Now that the raw RNA-Seq data have been aligned to the reference human genome, we can assemble the data into individual transcripts as a step towards identifying differential gene expression (DGE). The *htseq-count* tool determines the transcripts at each gene in the reference and provides un-normalized counts.
 
-Perform *htseq-count* on each replicate's *HiSAT2* BAM file, using the *gencode.v29.annotation.gtf.gz* annotation file and the *Reverse* stranded option (which reflects use of a first-strand synthesis kit during library construction, see [PMID 32415774](https://pubmed.ncbi.nlm.nih.gov/32415774/)). For example:
+Perform *featureCounts* on each replicate's *HISAT2* BAM file, using the *gencode.v29.annotation.gtf.gz* annotation file and the *Reverse* stranded option (which reflects use of a first-strand synthesis kit during library construction, see [PMID 32415774](https://pubmed.ncbi.nlm.nih.gov/32415774/)). Reverse strandedness can be implemented in featureCounts using the parameter `-s 2`. For example:
 
-![htseq-count](./htseq-count.jpg)
+```bash
+# create new output directory
+mkdir feature_counts
+# run feature counts 
+featureCounts -p -a gencode.v29.annotation.gtf \
+-o feature_counts/HLA_Cd_1_feature_counts.txt \
+-s 2 \
+hisat2/HLE_Cd_1.bam
+```
 
-**Ignore the *(no feature)* results, as these are not mapped to genes**. Record the results identifiers in the the [Sample Tracking.xlsx](Sample_Tracking.xlsx) spreadsheet. 
+**Question #3. Examine the results of featureCounts. How many total transcripts are quantified? Write a simple R script to determine how many transcript have 3 or more reads mapped to them. What proportion of transcripts have at least 3 reads?**
 
-**Question #3. Examine the results of htseq-count and then using *Filter*, determine how many assembled transcripts were found in the Cadmium and Control collections (give the range covered by the three replicates).**
-
-![filter](./filter.jpg)
+Repeat the above steps for the remaining samples.
 
 <a name="dge"></a>
 ## Differential Gene Expression Analysis
 
-> Note - The DESeq2 tool may not que properly, only use it once all previous steps are complete.
+We are going to use *DESeq2* to both normalize and perform significance tests on these data. To do this, we can run the script `run_deseq2.R`.
 
-We are going to use *DESeq2* to both normalize and perform significance tests on these data. To do this we have to define the factors in the experiment and assign the *htseq-count* data to these factors. The controls should be in the first factor. For example:
-
-![factors](./deseq2.jpg)
-
-Make sure *Files have header?*, *Generate plots for visualizing the analysis results,* and *Output normalized counts table* are set to **Yes** and then run the analysis: 
-
-![factors](./deseq2options.jpg)
-
-*DESeq2* will normalize the data and perform the statistical testing as outlined in the lecture, but it will also create a table of normalized transcript counts that you could export for traditional ANOVA using MeV4 like you performed in the microarray lab.
+```bash
+# run DESeq2
+Rscript run_deseq2.R
+```
 
 *DESeq2* will create a results file that included significance testing (using the P-adj to reflect correction for false discovery), a principal components plot to visualize differences in overall transcriptome among the replicates, and a table of normalized counts.
 
-**Question #4. Look at transcript differential expression testing and then try *Filter* for significant differences in transcript abundance (P-adj < 0.05). How many genes are differentially expressed in this experiment at this corrected alpha value?**
+**Question #4. Look at transcript differential expression testing and then try filter in R for significant differences in transcript abundance (P-adj < 0.05). How many genes are differentially expressed in this experiment at this corrected alpha value?**
 
-![filter](./filter2.jpg)
-
-**Question #5. Look at the normalized counts and then try *Sort* to determine the most highly expressed gene in Cadmium exposed cells. Is it the same for each replicate?**
-
-![sort](./sort.jpg)
+**Question #5. Look at the normalized counts and then try sort in R to determine the most highly expressed gene in Cadmium exposed cells. Is it the same for each replicate?**
 
 <a name="interpretation"></a>
 ## Interpretation
 
-At this point, we have a robust statistical analysis of these RNA-Seq data, with a resulting list of significantly differentially expressed genes, that are labeled using *ENSEMBL_GENE_ID* identifiers. Using the techniques of [Lab 4](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_4_Ontologies), use the [DAVID tool](https://david.ncifcrf.gov) to interpret these results. 
+At this point, we have a robust statistical analysis of these RNA-Seq data, with a resulting list of significantly differentially expressed genes, that are labeled using *ENSEMBL_GENE_ID* identifiers. We will be using [gProfiler](https://biit.cs.ut.ee/gprofiler/gost) to provide some biological context. gProfiler identifies biological pathways that are enriched more than expected amongst the list of differentially expressed genes.
 
-> Note - DAVID gets confused with the version identifiers in these Ensembl gene identifiers. The file [Ensembl_list.txt](Ensembl_list.txt) contains the list of significant hits with the versioning removed.
+Take your list of differentially abundance transcript (Question 4) and paste them into the input box on the gProfiler page. Set the parameters according to the screenshot below. In this case, we will just be considering the KEGG pathways and pathways will be considered significant if FDR < 0.05.
+
+![gProfiler](gprofiler.png)
 
 **Problem #3. What is your overall interpretation of the impact of Cadmium on human lens epithelial cells?**
 
