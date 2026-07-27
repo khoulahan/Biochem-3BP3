@@ -13,14 +13,14 @@
 <a name="intro"></a>
 ## Introduction
 
-The goal of this lab is to review the analysis of RNA-Seq data.
+The goal of the lab is to introduce bulk RNA-sequencing analysis on the command line. The lab will walk through quality control and alignment on the command line along with analysis and data visualization implemented in R.
 
 **Lectures** - [Lecture 9](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%208%20-%20RNA-Seq.pptx) RNA-Seq, ChIP-Seq, Bisulfite-Seq ([~34 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcZMiU9kvzNEsvLCbkX9aiAB92qPdecMT2-SbmjLDGtPUg))
 
 **Flash Updates**
 * *RNA-Seq* 
-* *Illumina Bead Microarrays* 
-* *Tn-Seq* 
+* *False Discovery Rate (FDR)* 
+* *Principal Components Analysis (PCA)* 
 
 **Demo Videos**
 * [Set-Up & Data Cleaning](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EaUn4n_JRlhFrcSJiVhg9cYBWzv_sJPX6pBDC2ENcfh3eg) ~11 minutes
@@ -44,7 +44,11 @@ The goal of this lab is to review the analysis of RNA-Seq data.
 <a name="qc"></a>
 ## Setting Up
 
-Today’s lab will use the *cluster* . Upload all the data files via the Paste/Fetch tool (manually indicating the file type):
+Today’s lab will use the cluster. **Reminder:** to log onto the cluster you must be on the McMaster network or VPN. 
+
+```bash
+ssh -l <macid> acf-access-student.csu.mcmaster.ca
+```
 
 **Annotation (GTF format) File(s):**
 
@@ -121,9 +125,6 @@ SLIDINGWINDOW:4:20 # trims low quality bases
 
 **Question #2. Run *FASTQC* on a couple of your samples to see if the data has changed in quality. Has anything improved?**
 
-
-> Flash Update - Illumina HT-12
-
 <a name="mapping"></a>
 ## Mapping Reads to the Human Genome
 
@@ -165,9 +166,6 @@ rm hisat2/HLE_Cd_1.sam
 
 Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out*.
 
-
-> Flash Update - Tn-Seq
-
 **Problem #2. STAR creates a BAM file that contains the alignment information. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
 
 <a name="transcripts"></a>
@@ -194,6 +192,8 @@ Repeat the above steps for the remaining samples.
 <a name="dge"></a>
 ## Differential Gene Expression Analysis
 
+> Flash Update - False Discovery Rate (FDR)
+
 We are going to use *DESeq2* to both normalize and perform significance tests on these data. To do this, we can run the script `run_deseq2.R`.
 
 ```bash
@@ -202,6 +202,8 @@ Rscript run_deseq2.R
 ```
 
 *DESeq2* will create a results file that included significance testing (using the P-adj to reflect correction for false discovery), a principal components plot to visualize differences in overall transcriptome among the replicates, and a table of normalized counts.
+
+> Flash Update - Principal Component Analysis (PCA)
 
 **Question #4. Look at transcript differential expression testing and then try filter in R for significant differences in transcript abundance (P-adj < 0.05). How many genes are differentially expressed in this experiment at this corrected alpha value?**
 

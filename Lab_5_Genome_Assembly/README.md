@@ -9,21 +9,20 @@
 <a name="intro"></a>
 ## Introduction
 
-The goal of this lab is to improve student usage of the Linux operating system and the *command line*, in the context Illumina FASTQ DNA sequencing data and microbial genome assembly. Students will additionally be introduced to cloud computing and the Galaxy framework for bioinformatics analyses.
+The goal of this lab is to improve student usage of the Linux operating system and the *command line*, in the context Illumina FASTQ DNA sequencing data and microbial genome assembly. 
 
 **Lectures** - [Lecture 6 slides](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%206%20-%20Genome%20Assembly.pptx) DNA Sequencing & Genome Assembly [~50 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EUJI1KVG_nNDjlKZ6V57k6EB8cvcCFpzx8JR9s_2ybraEQ)
 
 **Flash Updates**
 * *Illumina Sequencing* 
 * *FASTQ* 
-* *Galaxy* 
+* *N50* 
 
 **Demo Videos**
 * [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
 * [De Bruijn graph walkthrough](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Efjr1LXuDp9MiqUjpzESEzMBMAPkDonE1UrmdA8Bn9O70A) ~6 minutes
 * [Command Line Genome Assembly walkthrough](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EbLIyE4ES29ArXkBhoSOLJAB_MX-x3gojUGq1kq7KJm0RQ) ~27 minutes
-* [Galaxy Genome Assembly - Queuing each step](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/ETtEvvq-3zJDtPkL8Ex5kMYB0qZvrmWIlpEKUlQBAK4k_Q) ~21 minutes
-* [Galaxy Genome Assembly - Results](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Ef0c-CyvQFlDrJLXmR62yGUBow6Qbs0ie_X4h-Ga8X3ckg) ~9 minutes
+
 
 **Background Reading** (optional)
 * Myers et al. 2000. A whole-genome assembly of *Drosophila*. [Science 287:2196-2204](https://www.ncbi.nlm.nih.gov/pubmed/?term=10731133)
@@ -33,8 +32,12 @@ The goal of this lab is to improve student usage of the Linux operating system a
 **Computer Resources**
 * This lab will use McMaster's virtual Windows servers, so you need to install and set-up [Microsoft Remote Desktop](https://uts.mcmaster.ca/services/teaching-and-learning/computer-labs/#tab-content-how-to-connect) on your personal computer. See the demo video on how to login using Microsoft Remote Desktop and your MacID.
 * All files and work on the virtual servers will be lost when you log out. Be sure to save your work elsewhere (e.g., email yourself a copy).
-* Part of today’s lab will be performed at the command line and is meant to expand your linux skills. You may need your notes from the last lab as a cheat sheet. Remember, case matters for linux computers. Unless otherwise indicated, use lowercase.
-* uppsala.mcmaster.ca is behind the McMaster firewall and requires VPN to connect from off campus or from the MacSecure wireless network.
+* We will also be using the cluster in today's lab
+* A reminder to log in you must be on the McMaster network or VPN
+
+```bash
+ssh -l <macid> acf-access-student.csu.mcmaster.ca
+```
 
 **Grading**
 * Questions are for your learning and are not graded
@@ -161,6 +164,8 @@ ls
 
 **Question #9. This strain of *Salmonella* is expected to be ~4,600,000 bp in size. What base pair coverage are we about to submit to the Velvet assembly?** 
 
+> Flash Update - N50
+
 We are now going to use the Velvet assembly to make contigs and scaffolds. First we need to make an assembly directory and then calculate the kmers present in the sequencing reads. The Velvet algorithm requires the kmer value to be an odd number to avoid palindromes. Longer kmers bring more specificity, but lower coverage. The Velvet package has been found to perform well with kmer length of 31 bp:
 
 ```bash
@@ -218,7 +223,7 @@ _Comparison of the assembly contigs (bottom) to the complete genome sequence of 
 
 ![Mapping contigs to a reference genome](./images/Mauve-Screenshot.jpg)
 
-Lastly, visualize the quality of the assembly graph, with an emphasis upon repeated sequences, using BANDAGE (https://rrwick.github.io/Bandage) and the *LastGraph.txt* file available on A2L/GitHub.
+Lastly, visualize the quality of the assembly graph, with an emphasis upon repeated sequences, using BANDAGE (https://rrwick.github.io/Bandage) and the *LastGraph.txt* file available on A2L/GitHub. BANDAGE can be accessed through the Microsoft Remote Desktop.
 
 **Problem #1. Based on the Tablet, MAUVE, and BANDAGE results, what is your assessment of the quality of your genome assembly?**
 
@@ -244,7 +249,7 @@ unicycler \
 
 **VISUALIZATION AND STATISTCS**
 
-Unicycler will create two main files, one containing the assembly graph and they other the contig FASTA sequences. Download the Unicycler assembly graph file (assembly.gfa) and use BANDAGE (https://rrwick.github.io/Bandage) to visualize the assembly.
+Unicycler will create two main files, one containing the assembly graph and they other the contig FASTA sequences. Download the Unicycler assembly graph file (assembly.gfa) and use BANDAGE (https://rrwick.github.io/Bandage) to visualize the assembly. BANDAGE can be accessed on the Microsoft Remote Desktop.
 
 We can also use the **Quast** tool to generate assembly statistics, reading the PDF report to view the assembly statistics:
 

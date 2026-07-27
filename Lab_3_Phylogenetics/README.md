@@ -24,6 +24,7 @@ In the last lab you worked to identify and develop a gene model for a putative P
 
 **Demo Videos**
 * [Introduction to P450 Phylogeny](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EeWrWWkth_tLoS2w_0GM6y0BHU5WvwkvfhtcJdwbV9_Tog) (Dr. Joanna Wilson, Department of Biology, McMaster University) ~14 minutes
+* [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
 * [Collecting Related Sequences using BLASTP](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EWbm_BPHrepDsvfrZeQDb9gBnaroTPvNJYkdC8aSPM7hRQ) ~16 minutes
 * [Generating and Editing a Multiple Sequence Alignment](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EfZQsWjTVbVLlG5b5udQrrwBilGwHueBtDRnv7B0u-kyUg) ~17 minutes
   * If you get an error when you try to run your multiple sequence alignment, [watch this video](https://www.macvideo.ca/media/Kaltura+Capture+recording+-+September+28th+2023%2C+12A12A40+pm/1_pvqcezu6)
@@ -37,7 +38,6 @@ In the last lab you worked to identify and develop a gene model for a putative P
 **Links**
 * Clustal, http://www.clustal.org
 * Mesquite, http://www.mesquiteproject.org
-* RAxML Blackbox at CIPRES, http://www.phylo.org/index.php/
 * Archaeopteryx, https://www.phylosoft.org/archaeopteryx/ 
 * NCBI Tree Viewer, http://www.ncbi.nlm.nih.gov/projects/treeview/
 
@@ -48,6 +48,9 @@ In the last lab you worked to identify and develop a gene model for a putative P
 ```bash
 ssh -l <macid> acf-access-student.csu.mcmaster.ca
 ```
+* You will also be using McMaster's virtual servers,  so you need to install and set-up [Microsoft Remote Desktop](https://uts.mcmaster.ca/services/teaching-and-learning/computer-labs/#tab-content-how-to-connect) on your personal computer
+* See the demo video on how to login using Microsoft Remote Desktop and your MacID.
+* All files and work on the virtual servers will be lost when you log out. Be sure to save your work elsewhere (e.g., email yourself a copy)
 
 **Grading**
 * Questions are for your learning and are not graded

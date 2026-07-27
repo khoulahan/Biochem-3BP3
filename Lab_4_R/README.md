@@ -16,7 +16,9 @@
 The goal of this lab is to learn basic R. R is a statistical programming language that supports statistical analyses as well as data visualization. The lab will walk through reading in a file, manipulating data and writing the new results to file.
 
 **Flash Updates**
-
+* *Tidyverse* 
+* *Wide vs. Long Data* 
+* *Boxplot* 
 
 
 **Links**
@@ -51,6 +53,8 @@ You should now be within the R statistical environment.
 ![R](R_screen.png)
 
 **Loading R libraries**
+
+> Flash Update - Tidyverse
 
 We will be using [*tidyverse*](https://tidyverse.org/) which is a collection of R packages designed for data science.
 
@@ -175,6 +179,8 @@ students
 
 We will be working with tibbles for the majority of the lab.
 
+> Flash Update - Wide vs Long Data
+
 <a name="read"></a>
 ## Reading in Files
 
@@ -267,6 +273,8 @@ low_esr1_samples <- rownames(rna)[!high_esr1]
 
 <a name="plot"></a>
 ## Plotting
+
+> Flash Update - Boxplots
 
 A particularly handy plot type to look at the distribution of data is a [boxplot](https://www.atlassian.com/data/charts/box-plot-complete-guide). Boxplots show the distribution of data and are useful when one wants to compare multiple distributions at once on the same plot. 
 

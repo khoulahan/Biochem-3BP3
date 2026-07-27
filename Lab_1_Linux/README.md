@@ -15,9 +15,9 @@
 The goal of this lab is to introduce the Linux operating system, the *command line* and slurm, in the context of file manipulation and Sanger DNA sequencing informatics.
 
 **Flash Updates**
-* *Sanger Sequencing* 
 * *Linux* 
 * *Slurm* 
+* *FASTA* 
 
 **Computer Resources**
 * We will be using the Faculty of Health Science Computational Cluster
