@@ -1,4 +1,4 @@
-## Lab # 5 - Linux and Sequencing Informatics
+## Lab # 1 - Introduction to Linux and Slurm
 
 ## Table of Contents
 1. [Introduction](#intro)
@@ -12,37 +12,29 @@
 <a name="intro"></a>
 ## Introduction
 
-The goal of this lab is to introduce the Linux operating system and the *command line*, in the context of file manipulation and Sanger DNA sequencing informatics.
+The goal of this lab is to introduce the Linux operating system, the *command line* and slurm, in the context of file manipulation and Sanger DNA sequencing informatics.
 
 **Flash Updates**
 * *Sanger Sequencing* 
-* *FASTA* 
 * *Linux* 
-
-**Demo Videos**
-* [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
-* [Linux Lab Walkthrough](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/ESLt0wgc_IlBmHvLBB7sKKEBfpWMccxRNd1eM31Jik8m5w) ~28 minutes
+* *Slurm* 
 
 **Computer Resources**
-* This lab will use McMaster's virtual Windows servers, so you need to install and set-up [Microsoft Remote Desktop](https://uts.mcmaster.ca/services/teaching-and-learning/computer-labs/#tab-content-how-to-connect) on your personal computer. See the demo video on how to login using Microsoft Remote Desktop and your MacID. 
-* All files and work on the virtual servers will be lost when you log out. Be sure to save your work elsewhere (e.g., email yourself a copy).
+* We will be using the Faculty of Health Science Computational Cluster
+* This is the same cluster that supports computational health science research at McMaster
 
 **Grading**
 * This is a participation lab, not graded.
 * An answer key will be provided on A2L after the deadline.
-
-> Instructor: backup files and scripts (with permissions set) can be found in files.tar.gz
 
 <a name="terminal"></a>
 ## The Terminal Client and the Remote Server
 
 > Flash Update - Linux 
 
-Today’s lab will be performed almost exclusively at the command line and is meant to be an introduction to command line thinking. Your instructor will introduce the terminal client on the class computers and you will use it to connect to a Linux server in the McArthur Laboratory (called *uppsala.mcmaster.ca*). Please note, often Windows terminal clients may not allow cut-and-paste of text. Your credentials for logging in to *uppsala* are available in the A2L WORD file.
+Today’s lab will be performed almost exclusively at the command line and is meant to be an introduction to command line thinking. It will also introduce *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
 
 **NOTE 1: Case matters for linux computers. Unless otherwise indicated, use lowercase.**
-
-**NOTE 2: If you are familiar with the command line and have client software on your computer (e.g. the Mac *Terminal* program), you may alternatively use your own client. This will require the McMaster VPN to access *uppsala.mcmaster.ca*.**
 
 <a name="login"></a>
 ## Login, Logout & Home Directory
@@ -50,10 +42,10 @@ Today’s lab will be performed almost exclusively at the command line and is me
 To login into the course server, we are going to use secure shell (ssh), which is an encrypted connection between machines:
 
 ```bash
-ssh -l biochem3bp3 uppsala.mcmaster.ca
+ssh -l <macid> acf-access-student.csu.mcmaster.ca
 ```
 
-> Note: uppsala.mcmaster.ca is behind the McMaster firewall and requires VPN to connect from off campus or from the MacSecure wireless network , https://uts.mcmaster.ca/services/computers-printers-and-software/virtual-private-networking/
+> Note: the server is behind the McMaster firewall and requires VPN to connect from off campus or from the MacSecure wireless network , https://uts.mcmaster.ca/services/computers-printers-and-software/virtual-private-networking/
 
 To logout of the course server:
 
@@ -63,10 +55,11 @@ exit
 
 It is always good practice to *exit* an ssh session because it ensures that all running processes associated to the ssh session are closed/ended.
 
-> Linux tip: use of the up arrow on your keyboard to bring back the previous command. Try this now to login to uppsala again.
+> Linux tip: use of the up arrow on your keyboard to bring back the previous command. Try this now to login to the server again.
 
-When you first login, you will see the welcome screen, which varies for each computer. Each account in LINUX has a home directory and since we are all sharing the same account, we all have the same home directory. In linux, this home directory is described as:
+When you first login, you will see the welcome screen, which varies for each computer. In linux, this home directory is described as:
 
+## TO DO: update home directory
 > /home/biochem3bp3
 
 LINUX has a directory hierarchy designated by the use of the slash (/) symbol.  The directory above is given as an absolute path (the exact location in the directory hierarchy).  If you ever need to confirm your exact location in the directory hierarchy, use:
@@ -89,6 +82,21 @@ cd ~/temp
 ```
 
 Note that the command line prompt shows your current location relative to your home directory, e.g. *biochem3bp3@uppsala:~/temp$*
+
+The *echo* command tells the computer to print things to screen.
+
+```bash
+echo "Hello World"
+echo "How are you?"
+```
+
+The "#" symbol tells the computer to ignore the text that comes after it. You can use the "#" symbol to add comments to your code to explain what each step is doing. What happens when you try the following code?
+
+```bash
+# Testing adding comments and "commenting code out"
+# echo "Hello World"
+echo "How are you?"
+```
 
 <a name="basic"></a>
 ## Basic Linux
@@ -153,7 +161,7 @@ The first is your shortcut to your home directory. The second example uses relat
 <a name="files"></a>
 ## File Manipulation
 
-Now we are going to work with some data, using software written by Dr. McArthur, but first everyone should move into their own personal directory:
+Now we are going to work with some data, but first everyone should move into their own personal directory:
 
 ```bash
 cd /home/biochem3bp3/yourname
@@ -161,8 +169,6 @@ pwd
 ```
 
 Are you in your own directory? If not, ask for help. 
-
-> Flash Update - FASTA 
 
 For a moment, open your web browser and look up accession LVLB01000014 in GenBank (http://www.ncbi.nlm.nih.gov). Now lets try the same thing at the command line using a Perl script written by Dr. McArthur:
 
@@ -320,31 +326,88 @@ man rm
 <a name="processes"></a>
 ## Process Management
 
-You have now learned the basics of file manipulation. You can use your computer to do many things at once, but sometimes it is hard to keep track of what your are doing or what is dominating your computer’s processor. For this we have the *ps* and *top* commands. First, see what is running in our shared account and then what is running for the entire computer:
+> Flash Update - Slurm
+
+You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process one by own person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assigexin resources to each task. This is where *Slurm* comes in. *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
+
+To submit a job to the *Slurm* scheduler, the command needs to be included in a slurm script with parameters telling *Slurm* what resources the task needs.
+
+Create a new file.
+```bash
+nano test_slurm.sbatch
+```
+Copy the following into the file:
 
 ```bash
-ps -a
-ps -ef | more
+#!/bin/bash
+#SBATCH --job-name=jobname
+#SBATCH --time=00:20:00
+#SBATCH --partition=educational
+#SBATCH --ntasks=1
+#SBATCH --mem=2G
+
+# include command you want to run
+gb2fasta LVLB01000014 > test.fa
 ```
 
-The *ps* give the process ID number for each job at the left, which you can use with the *kill* command to stop runaway processes.
+Save and close the file. 
 
-We can also get a global view of processes again but this time using *htop*:
+| Parameter | Description | 
+| --- | --- |
+| --job-name | Name of the job that will show in the Slurm queue | 
+| --time | Maximum length of time job will run for (format = days-hours:minutes:seconds). For example, to request the job to run for 2 days, you can either request 48 hours (`--time=48:00:00`) or 2 days (`--time=2-00:00:00`)   |
+| --partion | This tells slurm which resources to use. Please always keep this set to `educational` | 
+| --ntasks | This should reflect the number of threads a tool is using. If you are only requesting one thread but the tool is using more it will affect the performance of other jobs running on the same node. This will become important when running RaxML in Lab 3. | 
+| --mem | The amount of memory the job needs. | 
+
+The command can then be submitted to the *Slurm* scheduler using the *sbatch* command.
 
 ```bash
-htop
+sbatch test_slurm.sbatch
+```
+Other important commands: 
+
+Jobs can be monitored using `squeue`. By default, the output of `squeue` will tell you:
+* the JOBID
+* the parition the job is running on
+* the job name
+* the user who submitted the job
+* the job status (R = running; PD = pending, may be waiting for resources to be available)
+* the time the job has been running
+* the number of nodes the job is using
+* the names of the nodes the job is running on
+
+![squeue example](./squeue.png)
+
+Jobs can be canceled using `scancel` using the job id. **You can only cancel your own jobs.**
+
+```Bash
+# to cancel the above job (JOBID = 22283)
+scancel 22283
 ```
 
-The server you are using has 8 processors (listed at the top) and 128 GB memory. Unless the server is busy today, most of the processors will be idle and most of the memory will not be used. Exit the *htop* program by entering *q*.
+To get more details on a job that completed, you can use `sacct`. This can be used to determine how long a job ran for or how much memory it used. 
 
-In LINUX, you can run as many jobs as you like simultaneously, but at some point they will begin to slow each other down as they are forced to shared processors (ie. none will run at 100% speed). Similarly, when users and jobs can share memory but when they run out, they start to use swap space.
 
-**Question #2. What is swap space?**
+```Bash
+# to get more information about the resources used by the above job
+sacct -j 22283 --format=JobID,JobName,State,Elapsed,TotalCPU,MaxRSS,ReqMem
+```
+
+This will show: 
+* Elapsed – wall-clock time the job ran
+* TotalCPU – total CPU time used across all cores
+* MaxRSS – maximum resident memory (RAM) used
+* ReqMem – memory that was requested
+
+| JobID | JobName | State | Elapsed | TotalCPU | MaxRSS | ReqMem
+| --- | --- | --- | --- | --- | --- | --- | 
+| 22283 | raxml | COMPLETED | 01:23:15 | 03:42:10 | 8.5G | 16G
 
 <a name="seq"></a>
 ## Introductory Sequence Informatics
 
-> Flash Update - Sanger Sequencing 
+> Flash Update - FASTA 
 
 Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. First, move into your working directory and grab some data:
 

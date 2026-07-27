@@ -24,7 +24,6 @@ In the last lab you worked to identify and develop a gene model for a putative P
 
 **Demo Videos**
 * [Introduction to P450 Phylogeny](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EeWrWWkth_tLoS2w_0GM6y0BHU5WvwkvfhtcJdwbV9_Tog) (Dr. Joanna Wilson, Department of Biology, McMaster University) ~14 minutes
-* [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
 * [Collecting Related Sequences using BLASTP](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EWbm_BPHrepDsvfrZeQDb9gBnaroTPvNJYkdC8aSPM7hRQ) ~16 minutes
 * [Generating and Editing a Multiple Sequence Alignment](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EfZQsWjTVbVLlG5b5udQrrwBilGwHueBtDRnv7B0u-kyUg) ~17 minutes
   * If you get an error when you try to run your multiple sequence alignment, [watch this video](https://www.macvideo.ca/media/Kaltura+Capture+recording+-+September+28th+2023%2C+12A12A40+pm/1_pvqcezu6)
@@ -43,9 +42,12 @@ In the last lab you worked to identify and develop a gene model for a putative P
 * NCBI Tree Viewer, http://www.ncbi.nlm.nih.gov/projects/treeview/
 
 **Computer Resources**
-* This lab will use McMaster's virtual Windows servers, so you need to install and set-up [Microsoft Remote Desktop](https://uts.mcmaster.ca/services/teaching-and-learning/computer-labs/#tab-content-how-to-connect) on your personal computer
-* See the demo video on how to login using Microsoft Remote Desktop and your MacID. 
-* All files and work on the virtual servers will be lost when you log out. Be sure to save your work elsewhere (e.g., email yourself a copy)
+* You will be using the Faculty of Health Science Computational Cluster that you were introduced to in Lab 1 
+* To log in:
+
+```bash
+ssh -l <macid> acf-access-student.csu.mcmaster.ca
+```
 
 **Grading**
 * Questions are for your learning and are not graded
@@ -131,38 +133,46 @@ Like above, use WordPad to view the PHYLIP format file (*Downloads -> seqdump.tx
 <a name="raxml"></a>
 ## Generating a Maximum Likelihood Phylogenetic Tree
 
-To generate a maximum likelihood phylogenetic tree for these data, we are going to use an online RAxML server at the Cyberinfrastructure for Phylogenetic Research (CIPRES) Project, http://www.phylo.org/index.php/. **If you do not have an account, please register for one (check your email to validate the registration).**
+To generate a maximum likelihood phylogenetic tree for these data, we are going to use RAxML on the cluster. Start by making a directory to store the outputs of the algorithm: 
 
-At CIPRES, first create a new folder, giving it a brief description:
+```bash
+mkdir raxml_tree
+```
 
-![Create a New Folder](createfolder.jpg)
+We are going to run RAxML on the PHYLIP format file you generated with Mequite. We are going to run the following command but **make sure** you run it on a compute node by submitting it as job to *slurm*. Refer back to lab 1 to review how to format a *slurm* submission script. When setting up the slurm submission script, make sure the `--ntasks` in your slurm sbatch script matches the number of threads you are running RAxML with (in this case the number is 4).
 
-Click on *Data* and Upload your PHYLIP format file:
+```bash
+# command to run raxml on PHYLIP format file
+raxmlHPC \
+  -T 4 \
+  -s seqdump.txt.phy \
+  -n raxml_tree \
+  -m PROTGAMMAIJTTF \
+  -f a \
+  -# autoMRE \
+  -p 12345 \
+  -x 12345
+```
 
-![Upload File](uploadfile.jpg)
+Descriptions of parameters: 
 
-Now Click on *Tasks* and *Create New Task*, giving it a description. The Input Data is the PHYLIP file you have already loaded, the Task is *RAxML-HPC BlackBox*:
+| Parameter | Description |
+| -------- | -------- |
+| -PTHREADS | 4 | 
+| -s | Input file name |
+| -n | Output file name |
+| -m | Substitution model | 
+| -f | Algorithm (rapid Bootstrap analysis to search for best-scoring ML tree) | 
+| -I | Automatic bootstrap determination to assess confidence of results | 
+| -p | Random seed for parsinomy inference |
+| -x | Random seed for bootstrapping | 
 
-![RAxML BlackBox](blackbox.jpg)
-
-The parameters are as follows:
-
-![RAxML Parameters](parameters.jpg)
 
 * RAxML will automatically determine how many bootstrap replicates to analyze to assess confidence for your results
-* RAxML will use 48 processors to analyze your data for a maximum of 5 hours. This is overkill for a 30-40 taxa tree, your results will likely be complete within minutes
 * GTRGAMMA+I applies both a gamma model of among-site rate variation, but also estimates sites that do not evolve at all, collectively allowing different sites in your alignment to evolve at different rates
 * The JTT amino acid substitution model has been shown in numerous P450 phylogeny publications to be the best fit to this protein family
 * Using empirical base frequencies allows your substitution model to incorporate unequal frequencies of amino acids in your data
 * We will be using the Maximum Likelihood optimality criteria
-
-Once the parameters are set, you can *Save and Run Task*. You will get an email notifying you when the job is complete. Refresh the Task List and *View Output*:
-
-![View Output](viewoutput.jpg)
-
-Download the Best ML Tree with Bootstrap results:
-
-![RAxML Output](raxmloutput.jpg)
  
 <a name="tree"></a>
 ## Phylogenetic Tree Interpretation

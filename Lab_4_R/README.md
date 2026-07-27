@@ -127,6 +127,31 @@ You can access different elements in a vector:
 numbers[1]   # First element
 numbers[3]   # Third element
 ```
+
+**Introducing Booleans**
+
+A boolean is a data type that has one of two values: True or False. They are often used to evaluate conditions. For example, let's say you have the following vector: 
+
+```R
+students <- c("Lisa", "Tony", "Tim", "Jim", "Tina", "Michael")
+```
+
+We want to figure out how many students have names that are four letters long. To that we can: 
+
+```R
+# first calculate the number of characters in each name
+name_length <- nchar(students)
+print(name_length)
+# now we want to figure out which ones are 4 characters long
+length4 <- name_length == 4
+# you will notice that we now have TRUE when the name is 4 characters and FALSE if it is not
+# to get the total number, we can sum up the number of TRUE
+print(sum(length4))
+
+```
+
+In this way, boolean variables can help us identify when specific conditions are met.
+
 **Introducing Tibbles**
 
 A [tibble](https://tibble.tidyverse.org/) is a table (like a spreadsheet), where:
@@ -159,7 +184,7 @@ There are a few common text file types. How the columns are separate matters whe
 
 | File Suffix | Description |
 | :---: | :--- | 
-| .txt | Indicates text file which is often tab separated by not always.|
+| .txt | Indicates text file which is often tab separated but not always.|
 | .csv | Indicates comma separated values. |
 | .tsv | Indicates tab separated values. |
 
@@ -220,6 +245,23 @@ individual_interest <- rna['TCGA-4H-AAAK-01A',]
 Notice above, to index columns we added our column name after the `,` where as to index rows we added the row name before the `,` (`rna[rowname,colname]`). 
 
 **Question 3. What is the mean of *ESR1* across all individuals? Hint: look into the command `mean()`.**
+
+Let's say we want to find all individuals that have *ESR1* mRNA abundance above the mean. After we calculate the mean, we could then use a boolean variable to identify the individuals with *ESR1* above the mean. For example: 
+
+```R
+# we have already calculate the ESR1 mean 
+# we want to find individuals with ESR1 above the mean
+high_esr1 <- rna$ESR1 > esr1_mean
+# using this boolean we could then find the sample names for the individuals that have ESR1 above the mean
+# we do this by indexes the rownames (which are the same names) to only return the rownames where high_esr1 is TRUE
+high_esr1_samples <- rownames(rna)[high_esr1]
+```
+
+Note: the `!` symbol can be handy if you want the opposite. For example, if we wanted to find all the individuals where *ESR1* mRNA abundance was less than or equal to the mean, we could do the following to return all sample ids where `high_esr1` is FALSE.
+
+```R
+low_esr1_samples <- rownames(rna)[!high_esr1]
+```
 
 **Problem 1. There are three subtypes of breast cancer. Which subtype an individual develops influences their treatment protocol. The three subtypes are ER+ (defined by the presence of the estrogen receptor, encoded by *ESR1*), HER2+ (defined by the presence of HER2, encoded by *ERBB2*) and triple negative (defined by the absence of both ER and HER2). Based on just *ESR1* and *ERBB2* abundance, assign each sample to one of the three subtypes. Justify your decision.**
 
