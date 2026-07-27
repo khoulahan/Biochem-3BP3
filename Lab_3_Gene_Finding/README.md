@@ -1,4 +1,4 @@
-## Lab # 2 - Protein Annotation & Gene Finding
+## Lab # 3 - Protein Annotation & Gene Finding
 
 ## Table of Contents
 1. [Introduction](#intro)

@@ -1,4 +1,4 @@
-## Lab # 4 Introduction to R
+## Lab # 2 Introduction to R
 
 ## Table of Contents
 1. [Introduction](#intro)

@@ -1,4 +1,4 @@
-## Lab # 3 - Phylogenetics
+## Lab # 4 - Phylogenetics
 
 ## Table of Contents
 1. [Introduction](#intro)
