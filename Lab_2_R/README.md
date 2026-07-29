@@ -22,6 +22,7 @@ The goal of this lab is to learn basic R. R is a statistical programming languag
 
 
 **Links**
+* Tidyverse, https://tidyverse.org/
 
 **Computer Resources**
 * The lab can be completed on the *cluster*. Refer back to Lab 1 to refresh using command line arguments in Linux.
@@ -198,7 +199,7 @@ We will be using the file `breast_cancer_rna.txt`. The suffix tells us it is a t
 
 ```R
 # read in file
-rna <- read_tsv("breast_cancer_rna.txt")
+rna <- read_tsv("/workspace/lab/studentlab/lab2_R/breast_cancer_rna.txt")
 ```
 
 To break down this command, `rna` is variable name that we are going to store the data in. The assingment character `<-` tells R to assign the data to `rna`. The command `read_tsv` tells R to read in a file that is tab separated. Within the `read_tsv` command we give the file name to be read in. The file is stored as a tibble.
@@ -311,7 +312,7 @@ t.test(rna$ESR1, rna$ERBB2, paired = TRUE)
 <a name="write"></a>
 ## Writing to File
 
-If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. 
+If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. Make sure to write the file to your home directory. You may want to create a separate lab 2 direcotry to keep your outputs organized.
 
 ```R
 # write to file 

@@ -57,10 +57,9 @@ It is always good practice to *exit* an ssh session because it ensures that all 
 
 > Linux tip: use of the up arrow on your keyboard to bring back the previous command. Try this now to login to the server again.
 
-When you first login, you will see the welcome screen, which varies for each computer. In linux, this home directory is described as:
+When you first login, you will see the welcome screen, which varies for each computer. In linux, this home directory is described as below were `macid` is your MacID:
 
-## TO DO: update home directory
-> /home/biochem3bp3
+> /workspace/lab/studentlab/macid
 
 LINUX has a directory hierarchy designated by the use of the slash (/) symbol.  The directory above is given as an absolute path (the exact location in the directory hierarchy).  If you ever need to confirm your exact location in the directory hierarchy, use:
 
@@ -74,14 +73,14 @@ If you ever want to quickly get back to your home directory, use:
 cd ~
 ```
 
-The tilde is a LINUX symbol meaning *my home directory*.  Thus, the following two commands would both move you to the *temp* directory (one has already been created for this demo):
+The tilde is a LINUX symbol meaning *my home directory*.  Thus, the following two commands would both move you to your home directory:
 
 ```bash
-cd /home/biochem3bp3/temp
-cd ~/temp
+cd /workspace/lab/studentlab/macid
+cd ~
 ```
 
-Note that the command line prompt shows your current location relative to your home directory, e.g. *biochem3bp3@uppsala:~/temp$*
+Note that the command line prompt shows your current location relative to your home directory, e.g. *macid@acf-access-student:~$*
 
 The *echo* command tells the computer to print things to screen.
 
@@ -101,10 +100,10 @@ echo "How are you?"
 <a name="basic"></a>
 ## Basic Linux
 
-Ok, let’s start the demo.  Change to your home directory and list the contents:
+Ok, let’s start the demo.  Change to the lab 1 directory and list the contents:
 
 ```bash
-cd ~
+cd /workspace/lab/studentlab/lab1_linux
 ls
 ```
 
@@ -127,10 +126,11 @@ ls -la
 ls -al
 ```
 
-Since we are all sharing the same account on the same machine (which is not normal practice!), we are each first going to learn to make a new working directory and then move into it. In the example below, replace yourname with an actual name with no spaces (e.g. agmcarthur):
+Let's move back to our home directory. This is where we will store all the outputs for the labs. Let's also make a new directory to store the outputs of Lab 1 to keep our outputs organized.
 
 ```bash
-mkdir yourname
+cd ~
+mkdir lab1_linux
 ```
 
 Let’s see the results:
@@ -139,21 +139,19 @@ Let’s see the results:
 ls
 ```
 
-Ok, move into the *yourname* directory and confirm your location in the directory structure:
+Ok, move into your lab 1 directory and confirm your location in the directory structure:
 
 ```bash
-cd yourname
+cd lab1_linux
 pwd
 ```
 
-Here are the three ways you could return to your home directory. Try moving in and out of *yourname* using them and *cd yourname*:
+Here are the three ways you could return to your home directory. Try moving in and out of `lab1_linux`:
 
 ```bash
-cd ~
-cd yourname
-cd ..
-cd yourname
-cd /home/biochem3bp3
+cd ~/lab1_linux
+cd ../lab1_linux
+cd /workspace/lab/studentlab/macid/lab1_linux
 ```
 
 The first is your shortcut to your home directory. The second example uses relative paths as *..* means up one directory. The third example uses absolute paths.
@@ -164,7 +162,7 @@ The first is your shortcut to your home directory. The second example uses relat
 Now we are going to work with some data, but first everyone should move into their own personal directory:
 
 ```bash
-cd /home/biochem3bp3/yourname
+cd /workspace/lab/studentlab/macid/lab1_linux
 pwd
 ```
 
@@ -173,13 +171,13 @@ Are you in your own directory? If not, ask for help.
 For a moment, open your web browser and look up accession LVLB01000014 in GenBank (http://www.ncbi.nlm.nih.gov). Now lets try the same thing at the command line using a Perl script written by Dr. McArthur:
 
 ```bash
-gb2fasta LVLB01000014
+/workspace/lab/studentlab/lab1_linux/gb2fasta LVLB01000014
 ```
 
 Unfortunately, the output scrolled down the screen too fast, so lets redirect the output to file. The redirect *>* will take the screen output of any command and save it as a file:
 
 ```bash
-gb2fasta LVLB01000014 > test.fa
+/workspace/lab/studentlab/lab1_linux/gb2fasta LVLB01000014 > test.fa
 ls
 ```
 
@@ -247,7 +245,7 @@ Note that all of the following copy commands would have done the same thing:
 cp test.fa mydata/test.fa
 cp test.fa mydata/.
 cp test.fa ./mydata/.
-cp test.fa /home/biochem3bp3/yourname/mydata/.
+cp test.fa /workspace/lab/studentlab/macid/lab1_linux/mydata/.
 ```
 
 A single dot means *same* or *current*, so the second example means to copy using the same name. The third example explicitly tells linux that the directory *mydata* is in my current location and then to copy using the same name.  
@@ -284,30 +282,12 @@ cat baddata2.fa | more
 
 The vertical line is called a pipe. The results of *cat* are piped to *more*. *cat* attempts to spit out the entire contents of *baddata2.fa* to the screen, but *more* pauses it. Using pipes (you can use many on one line), you can combine linux programs to do very tricky things.  
 
-Ok, let’s clean things up by moving to our working directory yourname and removing the files we’ve created:
+Ok, let’s clean things up by moving to our working directory and removing the files we’ve created:
 
 ```bash
-cd ~/yourname
+cd ~/lab1_linux
 ls
 ```
-
-But how do we remove a folder? The command *apropos* will help you find commands (although a Google search is much easier). So, if you want to know about removing, you would use the command:
-
-```bash
-apropos remove
-```
-
-Blurred by again didn’t it?  We should have used a pipe:
-
-```bash
-apropos remove | more
-```
-
-Inside the apropos output, you should have seen:
-
-> rm (1) - remove files or directories
-
-> rmdir (1) - remove empty directories
 
 Try to remove the mydata directory:
 
@@ -328,12 +308,18 @@ man rm
 
 > Flash Update - Slurm
 
-You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process one by own person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assigexin resources to each task. This is where *Slurm* comes in. *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
+You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process one by own person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assign resources to each task. This is where *Slurm* comes in. *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
 
 To submit a job to the *Slurm* scheduler, the command needs to be included in a slurm script with parameters telling *Slurm* what resources the task needs.
 
-Create a new file.
+We can create a new file using the command `nano`. First let's make sure we are in our lab 1 directory. 
+
+**Note:** You can use `#` to add "comments" that the computer will ignore. This allows you to add documentation on what each line of code is doing.
+
 ```bash
+# make sure we are in our lab 1 directory
+cd ~/lab1_linux
+# create new file
 nano test_slurm.sbatch
 ```
 Copy the following into the file:
@@ -342,21 +328,21 @@ Copy the following into the file:
 #!/bin/bash
 #SBATCH --job-name=jobname
 #SBATCH --time=00:20:00
-#SBATCH --partition=educational
+#SBATCH --partition=classroom
 #SBATCH --ntasks=1
 #SBATCH --mem=2G
 
 # include command you want to run
-gb2fasta LVLB01000014 > test.fa
+/workspace/lab/studentlab/lab1_linux/gb2fasta LVLB01000014 > test.fa
 ```
 
-Save and close the file. 
+To save and close the file, hit `Ctrl-X` followed by `Y`. 
 
 | Parameter | Description | 
 | --- | --- |
 | --job-name | Name of the job that will show in the Slurm queue | 
 | --time | Maximum length of time job will run for (format = days-hours:minutes:seconds). For example, to request the job to run for 2 days, you can either request 48 hours (`--time=48:00:00`) or 2 days (`--time=2-00:00:00`)   |
-| --partion | This tells slurm which resources to use. Please always keep this set to `educational` | 
+| --partion | This tells slurm which resources to use. Please always keep this set to `classroom` | 
 | --ntasks | This should reflect the number of threads a tool is using. If you are only requesting one thread but the tool is using more it will affect the performance of other jobs running on the same node. This will become important when running RaxML in Lab 3. | 
 | --mem | The amount of memory the job needs. | 
 
@@ -365,6 +351,16 @@ The command can then be submitted to the *Slurm* scheduler using the *sbatch* co
 ```bash
 sbatch test_slurm.sbatch
 ```
+
+Alternatively, you can request a compute node to work interactively. This is helpful if you are developing code that you want to interate on and isn't ready to just run in the background yet. To request an interactive node, run the following:
+
+```Bash
+salloc --mem=2G --time=24:00:00 --partition=classrom
+srun --pty bash
+```
+
+To test which node you are on, you can run `hostname`. You will notice the node will no longer be `acf-access-student` (which is the headnode). **Importantly**, please avoid running computationally intensive processes on the headnode. Please run them by either submitting them to a code node (via `sbatch`) or running them interactively on a compute node. 
+
 Other important commands: 
 
 Jobs can be monitored using `squeue`. By default, the output of `squeue` will tell you:
@@ -409,10 +405,10 @@ This will show:
 
 > Flash Update - FASTA 
 
-Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. First, move into your working directory and grab some data:
+Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. These tools can all be found `/workspace/lab/studentlab/lab1_linux`.First, move into your working directory and grab some data:
 
 ```bash
-cd ~/yourname
+cd ~/lab1_linux
 gb2fasta LVLB01000014 > plasmodium.fa
 ls
 ```
@@ -451,7 +447,7 @@ If you enter any of them without arguments, you will get some help text. **They 
 
 The following file on the server is the draft genome sequence of the diplomonad parasite *Giardia intestinalis* in FASTA format:
 
-> ~/data/giardiacontigs.fa
+> /workspace/lab/studentlab/lab1_linux/giardiacontigs.fa
 
 You are going to analyze this file. You may read it or copy it, but please do not move or rename it.
 

@@ -14,7 +14,6 @@
 In the last lab you worked to identify and develop a gene model for a putative P450 gene in the *Carcharodon carcharias* genome. Using the available evidence, you worked to define intron and exon boundaries as well as predicted the encoded protein sequence. Yet you may have questioned whether your exons were under- or over-estimated and whether you missed any exons. Additionally, you used BLAST, Pfam via InterPRO, and PROSITE to provide a first-pass assignment to P450 family and subfamily. The goal of this lab is to use the methods of evolutionary biology to examine the accuracy of your gene model and preliminary annotation. 
 
 **Lectures**:
-* [Lecture 3 slides](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%203%20-%20Evolutionary%20Biology.pptx) Evolutionary Biology ([~50 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Efyg_qBx-2NCigJiy_FoLzQBQGRNFyp8glwtYnIHG5i-kA))
 * Bonus Material - Bayesian Methods (not official course content) [video ~10 minutes](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EYCAZ2CJGghMoXEFU7YEMTcBDDwCaNTTV6fh8A7UH_CKQQ)
 
 **Flash Updates**
@@ -139,7 +138,22 @@ Like above, use WordPad to view the PHYLIP format file (*Downloads -> seqdump.tx
 To generate a maximum likelihood phylogenetic tree for these data, we are going to use RAxML on the cluster. Start by making a directory to store the outputs of the algorithm: 
 
 ```bash
-mkdir raxml_tree
+# make sure you are in your home directory
+cd ~
+# make lab 4 directory
+mkdir lab4_phylogenetics
+```
+
+First, we need to upload our PHYLIP format file to the cluster. We can do that with `scp` which copies files between networks. On your local computer, run the following: 
+
+```bash
+scp seqdump.txt.phy macid@acf-access-student.csu.mcmaster.ca:/workspace/lab/macid/lab4_phylogenetics/
+```
+
+You will notice the syntax for this command is similar to `cp` which we learnt about in lab 1. Check to make sure the file has been uploaded on the cluster. 
+
+```bash
+ls ~/lab4_phylogenetics/
 ```
 
 We are going to run RAxML on the PHYLIP format file you generated with Mequite. We are going to run the following command but **make sure** you run it on a compute node by submitting it as job to *slurm*. Refer back to lab 1 to review how to format a *slurm* submission script. When setting up the slurm submission script, make sure the `--ntasks` in your slurm sbatch script matches the number of threads you are running RAxML with (in this case the number is 4).
@@ -182,9 +196,9 @@ Descriptions of parameters:
 
 > Flash Update - Phylogenetic Trees 
 
-Click on the Windows icon at the bottom left of your screen and use the search box to search for the program *forester_1038.jar* (it may take a moment to appear and start). Forester is a software package for visualizing phylogenetic trees. Perform the following:
+On the remote desktop, click on the Windows icon at the bottom left of your screen and use the search box to search for the program *forester_1038.jar* (it may take a moment to appear and start). Forester is a software package for visualizing phylogenetic trees. Perform the following:
 
-* Load your tree, *File -> Read Tree from File -> File Format to All Files* and load *RAxML_bipartitions.result.txt*
+* Load your tree, *File -> Read Tree from File -> File Format to All Files* and load *RAxML_bestTree.raxml_tree*
 * Place the visual root of the tree at the midpoint, *Tools -> MidPoint-Root*
 * Also *Order Subtrees* via the button in the left hand column
 
@@ -192,7 +206,7 @@ What can you learn from this tree about the phylogenetic placement of your putat
 
 **Problem #1. What is your final conclusion about the family and subfamily affiliation about your protein? Has it be placed in a known family or subfamily or is it perhaps a new family or subfamily? Can you make a functional prediction?**
 
-**In addition to answering Problem #1 on A2L, your FASTA sequence file (seqdump.txt), PHYLIP alignment file (seqdump.txt.phy), and RAxML tree file (RAxML_bipartitions.result.txt) should also be uploaded to A2L for review by the TA.**
+**In addition to answering Problem #1 on A2L, your FASTA sequence file (seqdump.txt), PHYLIP alignment file (seqdump.txt.phy), and RAxML tree file (RAxML_bestTree.raxml_tree) should also be uploaded to A2L for review by the TA.**
 
 
 
