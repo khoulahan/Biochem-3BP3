@@ -1,4 +1,4 @@
-## Lab # 6 - FASTQ and Genome Assembly
+## Lab # 5 - FASTQ and Genome Assembly
 
 ## Table of Contents
 1. [Introduction](#intro)
@@ -10,8 +10,6 @@
 ## Introduction
 
 The goal of this lab is to improve student usage of the Linux operating system and the *command line*, in the context Illumina FASTQ DNA sequencing data and microbial genome assembly. 
-
-**Lectures** - [Lecture 6 slides](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%206%20-%20Genome%20Assembly.pptx) DNA Sequencing & Genome Assembly [~50 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EUJI1KVG_nNDjlKZ6V57k6EB8cvcCFpzx8JR9s_2ybraEQ)
 
 **Flash Updates**
 * *Illumina Sequencing* 
@@ -56,15 +54,24 @@ ssh -l <macid> acf-access-student.csu.mcmaster.ca
 
 We are going to perform a command line assembly of a *Salmonella* genome that was sequenced using the Illumina platform using a kmer assembler called VELVET.
 
-Download the following FASTQ files and upload to the cluster:
-[Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz](https://dl.dropboxusercontent.com/s/30cagee5w63dvwq/Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz)
-[Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz](https://dl.dropboxusercontent.com/s/pm622bu70er1l71/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz)
-
 ```bash
-# files can be downloaded directly to the cluster using wget
-wget https://dl.dropboxusercontent.com/s/30cagee5w63dvwq/Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
-wget https://dl.dropboxusercontent.com/s/pm622bu70er1l71/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
+/workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
+/workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
 ```
+
+First, we are going to create a new directory in our home directory to store the outputs of this lab. Then we are going to create a symlink to the above FASTQ files. A symlink creates a special file in your home directory that points to the above FASTQ without having to copying them over fully and increasing the amount of data being stored. 
+
+```Bash
+# create new directory for lab 5
+cd ~
+mkdir lab5_genome_assembly
+cd lab5_genome_assembly
+# create simlinks
+ln -s /workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
+ls -s /workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
+```
+
+Now you can run everything below on the symlinks you have created in your home directory.
 
 **Question #1. These two files contain the *forward*  (R1) and *reverse* (R2) sequencing reads of this genome sequencing project. Given that the following command will tell you how many lines are in a file, how many DNA molecules have been sequenced and how many sequences are there?**
 
@@ -78,7 +85,7 @@ Take a look at one of the FASTQ files to remind yourself of the format and how s
 zless Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
 ```
 
-We have installed software from the FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/index.html) to perform some quality control steps on these data before assembling the genome. Let’s first look at how quality varies along the sequences:
+We have installed software from the FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/index.html) to perform some quality control steps on these data before assembling the genome. Let’s first look at how quality varies along the sequences. Make sure outputs are being written to your home directory.
 
 ```bash
 zcat *.fastq.gz | fastx_quality_stats -Q33 -o sequences.stats
