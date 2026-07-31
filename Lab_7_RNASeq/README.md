@@ -1,4 +1,4 @@
-## Lab # 9 RNA-Seq
+## Lab # 7 RNA-Seq
 
 ## Table of Contents
 1. [Introduction](#intro)
@@ -14,8 +14,6 @@
 ## Introduction
 
 The goal of the lab is to introduce bulk RNA-sequencing analysis on the command line. The lab will walk through quality control and alignment on the command line along with analysis and data visualization implemented in R.
-
-**Lectures** - [Lecture 9](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Lecture%208%20-%20RNA-Seq.pptx) RNA-Seq, ChIP-Seq, Bisulfite-Seq ([~34 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcZMiU9kvzNEsvLCbkX9aiAB92qPdecMT2-SbmjLDGtPUg))
 
 **Flash Updates**
 * *RNA-Seq* 
@@ -52,26 +50,31 @@ ssh -l <macid> acf-access-student.csu.mcmaster.ca
 
 **Annotation (GTF format) File(s):**
 
+All of the below files can be found `/workspace/lab/studentlab/lab7_rnaseq/references`
+
+```Bash
+gencode.v29.annotation.gtf.gz
 ```
-https://dl.dropboxusercontent.com/s/cr7u5npcqj6xp5w/gencode.v29.annotation.gtf.gz?dl=0
-```
+
 
 **Illumina Sequencing (FASTQ format) Files(s):**
 
+All of the below files can be found `/workspace/lab/studentlab/lab7_rnaseq/data`
+
 ```
-https://dl.dropboxusercontent.com/s/ng1qit5698hra02/adrenal.fastq?dl=0
-https://dl.dropboxusercontent.com/s/qgig0gsegvmkgs7/HLE_Cd_1_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/cushi8ut6mfb1ph/HLE_Cd_1_reverse.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/vpjl91pa2myciwi/HLE_Cd_2_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/epdxowzgc7biglt/HLE_Cd_2_reverse.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/e6vgsls07scm3re/HLE_Cd_3_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/5x1lw926ftljpgr/HLE_Cd_3_reverse.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/7927y0q1qf6l9at/HLE_Ctrl_1_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/rcy4wjswr9xfzwm/HLE_Ctrl_1_reverse.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/3478jpj8mlpa9im/HLE_Ctrl_2_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/gbsv0594lw1ncl0/HLE_Ctrl_2_reverse.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/9re3pkjfkv4odj6/HLE_Ctrl_3_forward.fastq.gz?dl=0
-https://dl.dropboxusercontent.com/s/czyd9wdrih4givw/HLE_Ctrl_3_reverse.fastq.gz?dl=0
+adrenal.fastq
+HLE_Cd_1_forward.fastq.gz
+HLE_Cd_1_reverse.fastq.gz
+HLE_Cd_2_forward.fastq.gz
+HLE_Cd_2_reverse.fastq.gz
+HLE_Cd_3_forward.fastq.gz
+HLE_Cd_3_reverse.fastq.gz
+HLE_Ctrl_1_forward.fastq.gz
+HLE_Ctrl_1_reverse.fastq.gz
+HLE_Ctrl_2_forward.fastq.gz
+HLE_Ctrl_2_reverse.fastq.gz
+HLE_Ctrl_3_forward.fastq.gz
+HLE_Ctrl_3_reverse.fastq.gz
 ```
 
 <a name="experiment"></a>
@@ -84,10 +87,15 @@ We are going to examine the response of the human transcriptome in a human lens 
 We are going to start by using the FastQC tool to examine the quality of some of the RNA-Seq data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y).
 
 ```bash
-# create directory to store initial fastqc run
-mkdir raw_fastqc
+# create directory for lab 7
+mkdir lab7_rnaseq
+cd lab7_rnaseq
+# let's make symlinks to the file in our directory
+ln -s /workspace/lab/studentlab/lab7_rnaseq/data/HLE_Cd_1_forward.fastq.gz .
 # run fastqc on foward fastq
 fastqc HLE_Cd_1_forward.fastq.gz
+# create directory to store initial fastqc run
+mkdir raw_fastqc
 # move output into folder
 mv HLE_Cd_1_forward_fastqc.html raw_fastqc/
 mv HLE_Cd_1_forward_fastqc.zip raw_fastqc/
@@ -130,25 +138,14 @@ SLIDINGWINDOW:4:20 # trims low quality bases
 
 Before we can interpret these data, we need to map the FASTQ reads to the reference human genome (hg38). We cannot use the standard Burrows-Wheeler Transform software BWA or Bowtie, since RNA-Seq data needs to be corrected for introns and exons. Instead, we will use [HISAT2](https://daehwankimlab.github.io/hisat2/main/), which can handle splice junction boundaries as well as control for fragment sizes.
 
-The first step is download the [reference files](https://daehwankimlab.github.io/hisat2/download/) required by *HISAT2*. 
-
-```bash
-# create directory to alignments
-mkdir hisat2
-mkdir hisat2/genome_dir
-# navigate to directory
-cd hisat2/genome_dir
-# download reference files
-wget https://genome-idx.s3.amazonaws.com/hisat/grch38_genome.tar.gz
-# extract files
-tar -xvf grc38_genome.tar.gz
-```
+The first step is download the [reference files](https://daehwankimlab.github.io/hisat2/download/) required by *HISAT2*. This step has already been done for you. The data can be found `/workspace/lab/studentlab/lab7_rnaseq/references/grch38`.
 
 Perform *HISAT2* read mapping for each sample, using the reference files you just downloaded. The command is provided below, however, please submit as a job to slurm. **Do not run on head node.** It is recommended to run the alignment with 6GB of memory requested. As a reminder of how to create a *sbatch script* please refer back to Lab 1. 
 
 ```bash
+mkdir hisat2
 # run HISAT2 to align reads to reference genome
-hisat2 --add-chrname -x hisat2/genome_dir/grch38/genome \
+hisat2 --add-chrname -x /workspace/lab/studentlab/lab7_rnaseq/references/grch38/genome \
 -1 trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \
 -2 trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \
 -S hisat2/HLE_Cd_1.sam
@@ -162,7 +159,6 @@ samtools view -bS hisat2/HLE_Cd_1.sam > hisat2/HLE_Cd_1.bam
 # once the file is coverted, we can remove the original sam file
 rm hisat2/HLE_Cd_1.sam
 ```
-
 
 Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out*.
 
@@ -179,7 +175,7 @@ Perform *featureCounts* on each replicate's *HISAT2* BAM file, using the *gencod
 # create new output directory
 mkdir feature_counts
 # run feature counts 
-featureCounts -p -a gencode.v29.annotation.gtf \
+featureCounts -p -a /workspace/lab/studentlab/lab7_rnaseq/references/gencode.v29.annotation.gtf \
 -o feature_counts/HLA_Cd_1_feature_counts.txt \
 -s 2 \
 hisat2/HLE_Cd_1.bam
@@ -198,7 +194,7 @@ We are going to use *DESeq2* to both normalize and perform significance tests on
 
 ```bash
 # run DESeq2
-Rscript run_deseq2.R
+Rscript /workspace/lab/studentlab/lab7_rnaseq/scripts/run_deseq2.R
 ```
 
 *DESeq2* will create a results file that included significance testing (using the P-adj to reflect correction for false discovery), a principal components plot to visualize differences in overall transcriptome among the replicates, and a table of normalized counts.
