@@ -16,6 +16,7 @@
 The goal of this lab is to learn basic R. R is a statistical programming language that supports statistical analyses as well as data visualization. The lab will walk through reading in a file, manipulating data and writing the new results to file.
 
 **Flash Updates**
+* *Linux*
 * *Tidyverse* 
 * *Wide vs. Long Data* 
 * *Boxplot* 
@@ -37,6 +38,8 @@ The goal of this lab is to learn basic R. R is a statistical programming languag
 ## Setting Up
 
 Today’s lab will use the *cluster*. We will be using an interactive node to run R. Refer back to lab 1 on how to request an interact node on *Slurm*. You will only need 2G of memory. Make sure to log out when you are done. 
+
+> Flash Update - Linux
 
 **Loading R**
 
@@ -294,7 +297,7 @@ plot_data <- pivot_longer(
 boxplot(mrna ~ gene, data = plot_data)
 ```
 
-**Problem 2. Create two boxplots, one for *ERBB2* and one for *ESR1*, where the y-axis is the mRNA abundance of the gene while the x-axis are the subtypes you have split individuals into in Problem 1. Does the boxplot support your subtype stratification? Why or why not?**
+**Problem 2. Create two boxplots, one for *ERBB2* and one for *ESR1*, where the y-axis is the mRNA abundance of the gene while the x-axis are the subtypes you have split individuals into in Problem 1. Does the boxplot support your subtype stratification? Why or why not? Note: you will need to submit your boxplot on Avenue to Learn.**
 
 <a name="stats"></a>
 ## Basic Statistics
@@ -305,14 +308,14 @@ A two-sample t-test compares the mean between groups or between two measurements
 # run a paired t-test
 t.test(rna$ESR1, rna$ERBB2, paired = TRUE)
 ```
-**Question 4. What is the p-value? WHat is the confidence interval? How do you interpret the confidence interval?**
+**Question 4. What is the p-value? What is the confidence interval? How do you interpret the confidence interval?**
 
 **Problem 3. Is the mRNA abundance of *ERBB2* and *ESR1* statistically different between your subtypes? Does this support your subtype stratification? Why or why not?**
 
 <a name="write"></a>
 ## Writing to File
 
-If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. Make sure to write the file to your home directory. You may want to create a separate lab 2 direcotry to keep your outputs organized.
+If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. Make sure to write the file to your home directory. You may want to create a separate lab 2 directory to keep your outputs organized.
 
 ```R
 # write to file 

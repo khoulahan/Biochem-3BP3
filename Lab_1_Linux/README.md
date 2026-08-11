@@ -14,12 +14,7 @@
 
 The goal of this lab is to introduce the Linux operating system, the *command line* and slurm, in the context of file manipulation and Sanger DNA sequencing informatics.
 
-**Flash Updates**
-* *Linux* 
-* *Slurm* 
-* *FASTA* 
-
-**Computer Resources**
+**Computer Resources** 
 * We will be using the Faculty of Health Science Computational Cluster
 * This is the same cluster that supports computational health science research at McMaster
 
@@ -30,11 +25,9 @@ The goal of this lab is to introduce the Linux operating system, the *command li
 <a name="terminal"></a>
 ## The Terminal Client and the Remote Server
 
-> Flash Update - Linux 
-
 Today’s lab will be performed almost exclusively at the command line and is meant to be an introduction to command line thinking. It will also introduce *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
 
-**NOTE 1: Case matters for linux computers. Unless otherwise indicated, use lowercase.**
+**NOTE:** Case matters for linux computers. Unless otherwise indicated, use lowercase.
 
 <a name="login"></a>
 ## Login, Logout & Home Directory
@@ -306,9 +299,21 @@ man rm
 <a name="processes"></a>
 ## Process Management
 
-> Flash Update - Slurm
-
 You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process one by own person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assign resources to each task. This is where *Slurm* comes in. *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
+
+**Standard Out and Standard Error** 
+
+When you run a command in the terminal, your computer can produce two main types of messages: **standard output** (`stdout`) and **standard error** (`stderr`).
+
+Standard output is where a program sends its normal results—for example, information you asked the program to print or the results of an analysis. Standard error is used for messages about what went wrong, warnings, or other diagnostic information. Importantly, "standard error" doesn’t necessarily mean that something has gone wrong! Programs often use it to report useful status updates or warnings.
+
+Think of them as two separate streams coming from your program: \
+stdout → “Here are the results!” \
+stderr → “Here’s some information or a warning about what I’m doing.”
+
+Keeping track of the standard error can be very helpful for debugging in case your code does not run how you intend it to.
+
+**Job Submission** 
 
 To submit a job to the *Slurm* scheduler, the command needs to be included in a slurm script with parameters telling *Slurm* what resources the task needs.
 
@@ -331,6 +336,8 @@ Copy the following into the file:
 #SBATCH --partition=classroom
 #SBATCH --ntasks=1
 #SBATCH --mem=2G
+#SBATCH -o standard_out.out
+#SBATCH -e standard_error.err
 
 # include command you want to run
 /workspace/lab/studentlab/lab1_linux/gb2fasta LVLB01000014 > test.fa
@@ -345,12 +352,16 @@ To save and close the file, hit `Ctrl-X` followed by `Y`.
 | --partion | This tells slurm which resources to use. Please always keep this set to `classroom` | 
 | --ntasks | This should reflect the number of threads a tool is using. If you are only requesting one thread but the tool is using more it will affect the performance of other jobs running on the same node. This will become important when running RaxML in Lab 3. | 
 | --mem | The amount of memory the job needs. | 
+| -o | Filename to write standard out to. |
+| -e | Filename to write standard error to. |  
 
 The command can then be submitted to the *Slurm* scheduler using the *sbatch* command.
 
 ```bash
 sbatch test_slurm.sbatch
 ```
+
+> After your job finishes, you can check if your `standard_out.out` and `standard_error.err` files have been generated. They will most likely be empty in this case..
 
 Alternatively, you can request a compute node to work interactively. This is helpful if you are developing code that you want to interate on and isn't ready to just run in the background yet. To request an interactive node, run the following:
 
@@ -403,8 +414,6 @@ This will show:
 <a name="seq"></a>
 ## Introductory Sequence Informatics
 
-> Flash Update - FASTA 
-
 Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. These tools can all be found `/workspace/lab/studentlab/lab1_linux`.First, move into your working directory and grab some data:
 
 ```bash
@@ -413,12 +422,12 @@ gb2fasta LVLB01000014 > plasmodium.fa
 ls
 ```
 
-**Question #3. How many FASTA sequences are in the plasmodium.fa file?**
+**Question #2. How many FASTA sequences are in the plasmodium.fa file?**
 
 ```bash
 facount plasmodium.fa
 ```
-**Question #4. How many nucleotides are in the Plasmodium sequence and what is the GC percentage content?**
+**Question #3. How many nucleotides are in the Plasmodium sequence and what is the GC percentage content?**
 
 ```bash
 faletters plasmodium.fa
