@@ -39,6 +39,13 @@ The goal of this lab is to learn basic R. R is a statistical programming languag
 
 Today’s lab will use the *cluster*. We will be using an interactive node to run R. Refer back to lab 1 on how to request an interact node on *Slurm*. You will only need 2G of memory. Make sure to log out when you are done. 
 
+
+```Bash
+# request an interactive node on the cluster with 2G that will run for 24 hours
+salloc --mem=2G --time=24:00:00 --partition=classrom
+srun --pty bash
+```
+
 > Flash Update - Linux
 
 **Loading R**
@@ -302,11 +309,11 @@ boxplot(mrna ~ gene, data = plot_data)
 <a name="stats"></a>
 ## Basic Statistics
 
-A two-sample t-test compares the mean between groups or between two measurements on the same samples. We can test if the mRNA abundance of *ERBB2* differs from *ESR1*. Because both meaures are on the same samples, this is technically considered a paired t-test.
+A two-sample [t-test](https://www.scribbr.com/statistics/t-test/) compares the mean between groups. We can test if the mRNA abundance of *ERBB2* differs from *ESR1*. 
 
 ```R
 # run a paired t-test
-t.test(rna$ESR1, rna$ERBB2, paired = TRUE)
+t.test(rna$ESR1, rna$ERBB2)
 ```
 **Question 4. What is the p-value? What is the confidence interval? How do you interpret the confidence interval?**
 
