@@ -12,6 +12,7 @@
 
 The goal of this lab is to annotate the P450 proteins in the recently sequenced Great White Shark genome, using BLAST, Pfam, and other tools plus a number of available databases. This is a problem-based learning lab and you will work both collectively and individually. The results of this week’s lab will be used in next week’s evolution lab.
 
+
 **Flash Updates**
 * *BLAST*
 * *Pfam*
@@ -30,7 +31,7 @@ The goal of this lab is to annotate the P450 proteins in the recently sequenced 
 
 **Links**
 * NCBI & GenBank, http://www.ncbi.nlm.nih.gov
-* Ensembl, http://www.ensembl.org
+* Ensembl, https://jun2026.archive.ensembl.org 
 * *Carcharodon carcharias* genome, https://www.ncbi.nlm.nih.gov/nuccore/QUOW00000000.1/
 * NCBI TBLASTN, https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=tblastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome
 * Translate tool, http://web.expasy.org/translate/
@@ -55,7 +56,7 @@ _Carcharodon carcharias. Source: IUCN Red List of Threatened Species_
 
 Dr. Joanna Wilson (Department of Biology, McMaster University) will introduce *Carcharodon carcharias* (great white shark) and its importance for evolutionary biology, with a focus on the P450 enzymes in the defensome (see [Introduction to P450s & The Great White Shark](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EVlSruy12RBAq5-3kwudtEMBAqWdUvWDiz-4xExGFOvbtw) video). Using query sequences from the zebrafish genome, it is your job to use the BLAST tools and genome browser at NCBI to collectively find all the putative P450 genes in this genome. 
 
-In the class Teams under *Files -> Lab 2* you will find spreadsheets for the T01, T02, and T03 tutorials with individually assigned query P450s and columns for notes as you complete the lab. These zebrafish proteins can be found at Ensembl, http://www.ensembl.org.
+In the class Teams under *Files -> Lab 2* you will find spreadsheets for the T01, T02, and T03 tutorials with individually assigned query P450s and columns for notes as you complete the lab. These zebrafish proteins can be found at Ensembl, https://jun2026.archive.ensembl.org.
 
 > Ensembl giving errors? You can also obtain your protein sequence via ZFIN: [demo video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EZPApFVb-m5EgVW66B8dHMkBcvhk4_4_1Z7ixFpWIkmRQQ)
 

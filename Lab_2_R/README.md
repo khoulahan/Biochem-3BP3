@@ -28,6 +28,11 @@ The goal of this lab is to learn basic R. R is a statistical programming languag
 **Computer Resources**
 * The lab can be completed on the *cluster*. Refer back to Lab 1 to refresh using command line arguments in Linux.
 
+**Demo Videos**
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+* [Launching R](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC0uzY7udidQ43VoT93LlrAAZ8RFMKz9ifO_LIE9ETucuQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=VjgQyx) ~3.5 minutes 
+* [Creating a Boxplot](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQD0fJhjAgMDS70gRMRTrNGcAVL_71HxyLqfMniz6bnnpik?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=eXUVdo) ~6 minutes
+
 **Grading**
 * Questions are for your learning and are not graded
 * Problems are worth 5 points each (-1 for each error)
@@ -42,19 +47,25 @@ Today’s lab will use the *cluster*. We will be using an interactive node to ru
 
 ```Bash
 # request an interactive node on the cluster with 2G that will run for 24 hours
-salloc --mem=2G --time=24:00:00 --partition=classrom
+salloc --mem=2G --time=24:00:00 --partition=classroom
 srun --pty bash
 ```
 
 > Flash Update - Linux
+
+Let's start by creating a new directory to store our lab 2 ouputs to keep ourselves organized. 
+
+```bash
+cd ~
+mkdir lab2_R
+cd lab2_R
+```
 
 **Loading R**
 
 To load R, run the following commands. The first makes sure the R software is loaded, the second will boot up R. 
 
 ```bash
-# load R
-module load R
 # launch R
 R
 ```
@@ -72,7 +83,7 @@ We will be using [*tidyverse*](https://tidyverse.org/) which is a collection of 
 Tidyverse is already installed within the R module on the cluster, however, if you are running R locally you will first have to install tidyverse. 
 
 ```R 
-install.packages(tidyverse)
+install.packages("tidyverse")
 ```
 
 If tidyverse is already installed, you just need to load it into your current R environment. 
@@ -301,7 +312,15 @@ plot_data <- pivot_longer(
     names_to = 'gene', 
     values_to = 'mrna')
 # make a boxplot of mRNA abundance (y-axis) by gene (x-axis)
+png("erbb2_esr1_boxplot.png", width = 800, height = 600)
 boxplot(mrna ~ gene, data = plot_data)
+dev.off()
+```
+
+To copy the boxplot to your local machine, we can use `scp` which copies files between networks. On your local computer, run the following: 
+
+```bash
+scp macid@acf-access-student.csu.mcmaster.ca:/workspace/lab/macid/lab2_R/erbb2_esr1_boxplot.png .
 ```
 
 **Problem 2. Create two boxplots, one for *ERBB2* and one for *ESR1*, where the y-axis is the mRNA abundance of the gene while the x-axis are the subtypes you have split individuals into in Problem 1. Does the boxplot support your subtype stratification? Why or why not? Note: you will need to submit your boxplot on Avenue to Learn.**
@@ -322,7 +341,7 @@ t.test(rna$ESR1, rna$ERBB2)
 <a name="write"></a>
 ## Writing to File
 
-If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. Make sure to write the file to your home directory. You may want to create a separate lab 2 directory to keep your outputs organized.
+If you haven't already, add a new column to the `rna` tibble that indicates the subtype (ER, HER2 or TNBC) for each individual. Finally, we want to write our subtype assignments to file. We will be comparing back to them later in Lab 10. Make sure to write the file to your home directory.
 
 ```R
 # write to file 
@@ -333,3 +352,5 @@ write.table(
     quote = FALSE # this parameter tells R not to quote characters
 )
 ```
+
+You can use `scp` again to copy the file to your local machine.

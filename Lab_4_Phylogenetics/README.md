@@ -23,11 +23,12 @@ In the last lab you worked to identify and develop a gene model for a putative P
 
 **Demo Videos**
 * [Introduction to P450 Phylogeny](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EeWrWWkth_tLoS2w_0GM6y0BHU5WvwkvfhtcJdwbV9_Tog) (Dr. Joanna Wilson, Department of Biology, McMaster University) ~14 minutes
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
 * [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
 * [Collecting Related Sequences using BLASTP](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EWbm_BPHrepDsvfrZeQDb9gBnaroTPvNJYkdC8aSPM7hRQ) ~16 minutes
 * [Generating and Editing a Multiple Sequence Alignment](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EfZQsWjTVbVLlG5b5udQrrwBilGwHueBtDRnv7B0u-kyUg) ~17 minutes
   * If you get an error when you try to run your multiple sequence alignment, [watch this video](https://www.macvideo.ca/media/Kaltura+Capture+recording+-+September+28th+2023%2C+12A12A40+pm/1_pvqcezu6)
-* [Generating a Phylogenetic Tree](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EQunw6tARClOqFv-UaXkXecBHDQxHydbJ5t4_VBmtbWHaw) ~5 minutes
+* [Running RaxML on the Cluser](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQCtF7y5cO5pQIpsSAQqPzhAATlGhinX9coY82xwRD5sisI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=9MUzZf) ~7 minutes
 * [Interpreting a Phylogenetic Tree](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EfmjoRC_mBdDv92D9FkJhuEBWjDEcBXs_z8V5UvsOKjQ1A) ~7 minutes
 
 **Background Reading** (optional)
@@ -160,7 +161,7 @@ We are going to run RAxML on the PHYLIP format file you generated with Mequite. 
 
 ```bash
 # command to run raxml on PHYLIP format file
-raxmlHPC \
+apptainer run /opt/COMMON_APPLICATIONS/images/raxml_8.2.13.sif raxmlHPC \
   -T 4 \
   -s seqdump.txt.phy \
   -n raxml_tree \

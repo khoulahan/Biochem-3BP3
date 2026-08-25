@@ -18,13 +18,16 @@ The goal of this lab is to introduce the Linux operating system, the *command li
 * We will be using the Faculty of Health Science Computational Cluster
 * This is the same cluster that supports computational health science research at McMaster
 
+**Demo Videos**
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+* [Submitting to Slurm](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQAmpCiUipYAQ4oNEQRFXhLxAe2xC2hnFuVGnkMGDs1Y7eM?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=diY7N6) ~5 minutes
+
 **Grading**
 * This is a participation lab, not graded.
 * An answer key will be provided on A2L after the deadline.
 
 <a name="terminal"></a>
 ## The Terminal Client and the Remote Server
-
 Today’s lab will be performed almost exclusively at the command line and is meant to be an introduction to command line thinking. It will also introduce *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
 
 **NOTE:** Case matters for linux computers. Unless otherwise indicated, use lowercase.
@@ -299,7 +302,7 @@ man rm
 <a name="processes"></a>
 ## Process Management
 
-You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process one by own person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assign resources to each task. This is where *Slurm* comes in. *Slurm*, an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
+You have now learned the basics of file manipulation. The server that you are working with can run many processes at once. However, to ensure that the process run by one person does not interrupt the process run by another person, it is helpful to have a system that can manage workload and assign resources to each task. This is where *Slurm* comes in. *Slurm* is an open-sourced job scheduler used to manage and monitor multiple tasks on high-performance compute systems.
 
 **Standard Out and Standard Error** 
 
@@ -414,24 +417,24 @@ This will show:
 <a name="seq"></a>
 ## Introductory Sequence Informatics
 
-Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. These tools can all be found `/workspace/lab/studentlab/lab1_linux`.First, move into your working directory and grab some data:
+Now we are going to learn some custom software developed by Dr. McArthur over the years for some simple Sanger sequence manipulation. These tools can all be found `/workspace/lab/studentlab/lab1_linux`.First, move into your working directory and let's rename our previous fasta file that we pulled.
 
 ```bash
 cd ~/lab1_linux
-gb2fasta LVLB01000014 > plasmodium.fa
+mv test.fa plasmodium.fa
 ls
 ```
 
 **Question #2. How many FASTA sequences are in the plasmodium.fa file?**
 
 ```bash
-facount plasmodium.fa
+/workspace/lab/studentlab/lab1_linux/facount plasmodium.fa
 ```
 **Question #3. How many nucleotides are in the Plasmodium sequence and what is the GC percentage content?**
 
 ```bash
-faletters plasmodium.fa
-gccontent plasmodium.fa
+/workspace/lab/studentlab/lab1_linux/faletters plasmodium.fa
+/workspace/lab/studentlab/lab1_linux/gccontent plasmodium.fa
 ```
 
 ## Assignment #1
