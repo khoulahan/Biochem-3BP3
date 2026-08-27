@@ -17,10 +17,10 @@ The goal of this lab is to improve student usage of the Linux operating system a
 * *N50* 
 
 **Demo Videos**
-* [Using Microsoft Remote Desktop](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EW0MD7r2VKNLiF9NcTSWalIBjrQKxeVJVoo6DCF06gFWUQ) ~2 minutes
 * [De Bruijn graph walkthrough](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Efjr1LXuDp9MiqUjpzESEzMBMAPkDonE1UrmdA8Bn9O70A) ~6 minutes
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+* [Submitting to Slurm](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQAmpCiUipYAQ4oNEQRFXhLxAe2xC2hnFuVGnkMGDs1Y7eM?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=diY7N6) ~5 minutes
 * [Command Line Genome Assembly walkthrough](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EbLIyE4ES29ArXkBhoSOLJAB_MX-x3gojUGq1kq7KJm0RQ) ~27 minutes
-
 
 **Background Reading** (optional)
 * Myers et al. 2000. A whole-genome assembly of *Drosophila*. [Science 287:2196-2204](https://www.ncbi.nlm.nih.gov/pubmed/?term=10731133)
@@ -68,10 +68,19 @@ mkdir lab5_genome_assembly
 cd lab5_genome_assembly
 # create simlinks
 ln -s /workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
-ls -s /workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
+ln -s /workspace/lab/studentlab/lab5_genome_assembly/Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
 ```
 
 Now you can run everything below on the symlinks you have created in your home directory.
+
+Before we start to compute on the data, let's make sure we are on a compute node. We can do this by logging onto an interactive node as we did in lab 2. 
+
+
+```Bash
+# request an interactive node on the cluster with 2G that will run for 24 hours
+salloc --mem=2G --time=24:00:00 --partition=classroom
+srun --pty bash
+```
 
 **Question #1. These two files contain the *forward*  (R1) and *reverse* (R2) sequencing reads of this genome sequencing project. Given that the following command will tell you how many lines are in a file, how many DNA molecules have been sequenced and how many sequences are there?**
 
@@ -125,58 +134,25 @@ Now look at the results to see how the data have changed:
 less sequences.filter
 ```
 
-**FASTQC**
-
-We can also use FASTQC to determine the quality of our data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y).
-
-```bash
-# run fastqc on original fastq files
-fastqc Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
-fastqc Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
-```
-
-Here is an example of the **Per base sequence quality** from another data set:
-
-![FASTQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc.png)
-
-For each sequenced nucleotide (start of read to end of read) a BoxWhisker type plot is drawn. The elements of the plot are as follows:
-
-* The central red line is the median value
-* The yellow box represents the inter-quartile range (25-75%)
-* The upper and lower whiskers represent the 10% and 90% percentiles
-* The blue line represents the mean quality
-
-The y-axis on the graph shows the quality scores. The higher the score the better the base call. The background of the graph divides the y axis into very good quality calls (green), calls of reasonable quality (orange), and calls of poor quality (red). The quality of calls on most platforms will degrade as the run progresses, so it is common to see base calls falling into the orange area towards the end of a read.
-
-**Question #5. In your *Salmonella* data, at what position along the reads does the mean quality fall below Q20? Is it the same for both the forward and reverse reads?**
-
-**Question #6. After reading the documentation on the FASTQC plots, do you think there is any evidence that the sequence library is biased (i.e. non-random)? Explain your reasoning.**
-
-```bash
-# run fastqc on trimed and quality filtered data
-fastqc sequences.filter
-```
-
-**Question #7. How does the trimmed and quality filtered FASTQ data differ from the original FASTQ data? How will the trimming improve your assembly?**
-
-
 The original data were paired reads (i.e. forward & reverse) but some of the pairs may have been lost by the filtering. The Velvet assembly algorithm treats paired and unpaired reads differently as only the former can create scaffolds, so we need to put these in different files using one of Dr. McArthur’s Perl scripts:
 
 ```bash
-fastq_interleave sequences.filter
+# separate out paired and unpaired reads
+/workspace/lab/studentlab/lab5_genome_assembly/fastq_interleave sequences.filter
+# check if output files are present
 ls
 ```
 
-**Question #8. How many paired and unpaired reads are in the final pre-assembly data?**
+**Question #5. How many paired and unpaired reads are in the final pre-assembly data?**
 
-**Question #9. This strain of *Salmonella* is expected to be ~4,600,000 bp in size. What base pair coverage are we about to submit to the Velvet assembly?** 
+**Question #6. This strain of *Salmonella* is expected to be ~4,600,000 bp in size. What base pair coverage are we about to submit to the Velvet assembly?** 
 
 > Flash Update - N50
 
-We are now going to use the Velvet assembly to make contigs and scaffolds. First we need to make an assembly directory and then calculate the kmers present in the sequencing reads. The Velvet algorithm requires the kmer value to be an odd number to avoid palindromes. Longer kmers bring more specificity, but lower coverage. The Velvet package has been found to perform well with kmer length of 31 bp:
+We are now going to use the Velvet assembly to make contigs and scaffolds. First we need to calculate the kmers present in the sequencing reads. The Velvet algorithm requires the kmer value to be an odd number to avoid palindromes. Longer kmers bring more specificity, but lower coverage. The Velvet package has been found to perform well with kmer length of 31 bp:
 
 ```bash
-mkdir draft_assembly
+# run velveth
 velveth draft_assembly 31 \
     -fastq \
     -shortPaired sequences.filter.paired \
@@ -191,18 +167,18 @@ velvetg draft_assembly \
     -cov_cutoff auto \
     -exp_cov auto
 # calculate stats on assembled contigs
-scaffoldstats draft_assembly/contigs.fa
+/workspace/lab/studentlab/lab5_genome_assembly/scaffoldstats draft_assembly/contigs.fa
 ```
 
-**Question #10. If you browse through the output, how many kmers were found in the sequencing data?**
+**Question #7. If you browse through the output, how many kmers were found in the sequencing data?**
 
-**Question #11. What fraction of the sequencing reads contributed to the final assembly?**
+**Question #8. What fraction of the sequencing reads contributed to the final assembly?**
 
-**Question #12. The Final Graph in Velvet refers to the contig sequences, whereas the output of scaffoldstats refers to scaffolds. Is the N50 higher for the scaffolds than the contigs? Why?**
+**Question #9. The Final Graph in Velvet refers to the contig sequences, whereas the output of scaffoldstats refers to scaffolds. Is the N50 higher for the scaffolds than the contigs? Why?**
 
-**Question #13. Why is the final estimated coverage lower than what we estimated in Question 6?**
+**Question #10. Why is the final estimated coverage lower than what we estimated in Question 6?**
 
-Record some statistics for later comparison:
+Record some statistics:
 
 * Total number of scaffolds:
 * Total scaffold assembly length (bp):
@@ -230,28 +206,79 @@ _Comparison of the assembly contigs (bottom) to the complete genome sequence of 
 
 ![Mapping contigs to a reference genome](./images/Mauve-Screenshot.jpg)
 
-Lastly, visualize the quality of the assembly graph, with an emphasis upon repeated sequences, using BANDAGE (https://rrwick.github.io/Bandage) and the *LastGraph.txt* file available on A2L/GitHub. BANDAGE can be accessed through the Microsoft Remote Desktop.
+Lastly, visualize the quality of the assembly graph, with an emphasis upon repeated sequences, using BANDAGE (https://rrwick.github.io/Bandage) and the *LastGraph*. BANDAGE can be accessed through the Microsoft Remote Desktop. You will want to copy your assembly graph to the Microsoft Remote Desktop using `scp` in terminal.
+
+
+```bash
+scp macid@acf-access-student.csu.mcmaster.ca:/workspace/lab/macid/lab5_genome_assembly/draft_assembly/LastGraph .
+```
 
 **Problem #1. Based on the Tablet, MAUVE, and BANDAGE results, what is your assessment of the quality of your genome assembly?**
+
+**FASTQC**
+
+We can also use FASTQC to determine the quality of our data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y).
+
+```bash
+# run fastqc on original fastq files
+fastqc Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz
+fastqc Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz
+```
+
+Here is an example of the **Per base sequence quality** from another data set:
+
+![FASTQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc.png)
+
+For each sequenced nucleotide (start of read to end of read) a BoxWhisker type plot is drawn. The elements of the plot are as follows:
+
+* The central red line is the median value
+* The yellow box represents the inter-quartile range (25-75%)
+* The upper and lower whiskers represent the 10% and 90% percentiles
+* The blue line represents the mean quality
+
+The y-axis on the graph shows the quality scores. The higher the score the better the base call. The background of the graph divides the y axis into very good quality calls (green), calls of reasonable quality (orange), and calls of poor quality (red). The quality of calls on most platforms will degrade as the run progresses, so it is common to see base calls falling into the orange area towards the end of a read.
+
+Watch the demo video above on how to look at your fastqc results.
+
+**Question #11. In your *Salmonella* data, at what position along the reads does the mean quality fall below Q20? Is it the same for both the forward and reverse reads?**
+
+**Problem #12. After reading the documentation on the FASTQC plots, do you think there is any evidence that the sequence library is biased (i.e. non-random)? Explain your reasoning.**
+
+```bash
+# run fastqc on trimed and quality filtered data
+fastqc sequences.filter
+```
+
+**Question #13. How does the trimmed and quality filtered FASTQ data differ from the original FASTQ data? How will the trimming affect your assembly?**
 
 **UNICYCLER ASSEMBLY**
 
 We used the older assembler VELVET and in the lecture we learned about the all-in-one microbial assembler A5.  We are going to perform our final assembly using the Unicycler assembler, which is considered the best for kmer based assembly. 
 
-First we need to de-interlace the FASTQ file.: 
+First, we will use the TRIMMOMATIC tool to perform quality trimming on our data. 
 
 ```bash
-./deinterleave_fastq.sh < sequences.filter.paired sequences.filter_R1.fastq sequences.filter_R2.fastq
+mkdir trimmomatic
+# run trimmomatic in paired-end mode
+apptainer run /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.sif trimmomatic PE \
+    -threads 1 \
+    Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz  \
+    Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz \
+    trimmomatic/Salmonella_forward_trimmed_paired.fq.gz \
+    trimmomatic/Salmonella_forward_trimmed_unpaired.fq.gz \
+    trimmomatic/Salmonella_reverse_trimmed_paired.fq.gz \
+    trimmomatic/Salmonella_reverse_trimmed_unpaired.fq.gz \
+    ILLUMINACLIP:TruSeq2-PE.fa:2:30:10:8:True SLIDINGWINDOW:4:20 
 ```
 
-Unicycler has powerful defaults, so perform the Unicycler assembly using the FASTQ De-Interlacer results and without changing any of the parameters:
+Unicycler has powerful defaults, so perform the Unicycler assembly using the trimmed fastqs and without changing any of the parameters:
 
 ```bash
-mkdir unicycler
-unicycler \
-    -1 sequences.filter_R2.fastq \
-    -2 sequences.filter_R1.fastq \
-    -o unicycler_v2
+apptainer run /workspace/lab/studentlab/lab5_genome_assembly/unicycler_v4.9.1.sif unicycler \
+    -t 1 \
+    -1 trimmomatic/Salmonella_forward_trimmed_paired.fq.gz \
+    -2 trimmomatic/Salmonella_reverse_trimmed_paired.fq.gz \
+    -o unicycler
 ```
 
 **VISUALIZATION AND STATISTCS**
