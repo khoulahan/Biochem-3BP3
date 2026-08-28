@@ -22,9 +22,10 @@ read_in_and_reformat_counts <- function() {
         },
         simplify = FALSE)
     # merge files by gene id
-    merged <- reduce(df_list, full_join, by = "Geneid")
+    merged <- reduce(df_list, inner_join, by = "Geneid")
     colnames(merged) <- gsub("hisat2\\.|\\.bam", "", colnames(merged))
-    return(merged)
+    rownames(merged) <- merged$Geneid
+    return(merged[,-1])
     }
 
 ### MAIN ##########################################################################################
@@ -33,8 +34,8 @@ gene_counts <- read_in_and_reformat_counts()
 
 # create metadata 
 metadata <- data.frame(
-    id = colnames(gene_counts)[-1],
-    treatment = gsub("HLE_|_1|_2|_3", "", colnames(gene_counts)[-1])
+    id = colnames(gene_counts),
+    treatment = gsub("HLE_|_1|_2|_3", "", colnames(gene_counts))
     )
 
 # construct DESeq2 object

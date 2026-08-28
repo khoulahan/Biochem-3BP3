@@ -21,17 +21,11 @@ The goal of the lab is to introduce bulk RNA-sequencing analysis on the command 
 * *Principal Components Analysis (PCA)* 
 
 **Demo Videos**
-* [Set-Up & Data Cleaning](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EaUn4n_JRlhFrcSJiVhg9cYBWzv_sJPX6pBDC2ENcfh3eg) ~11 minutes
-* [Read Mapping](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/ESvw9oUNBwtIg7dO_PMATlMBmbZ6aPhZ4SBuiKqQXbxIig) ~4 minutes
-* [Transcript Assembly](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcbU-9ZwW2BKhMKQanVXkEgBxt4BZxP0My4mj3SzReYCtw) ~6 minutes
-* [Differential Gene Analysis & Interpretation](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Ee8IQz_I8c9BiFfZ-98JSksBY30ATte94sccEwi2aoX6Wg) ~13 minutes
-
-
-**Links**
-
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+* [Viewing FASTQC Results](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQCDQp8AuxWwTbQblBHpQmidAcPwmwdYdprqX7dhEixl2Fk?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=fNC7WY) ~3 minutes
 
 **Computer Resources**
-* The lab can be completed on the *cluster*. Refer back to Lab 1 and 4 to refresh using command line arguments in Linux and R.
+* The lab can be completed on the *cluster*. Refer back to Lab 1 and 2 to refresh using command line arguments in Linux and R.
 
 **Grading**
 * Questions are for your learning and are not graded
@@ -55,7 +49,6 @@ All of the below files can be found `/workspace/lab/studentlab/lab7_rnaseq/refer
 ```Bash
 gencode.v29.annotation.gtf.gz
 ```
-
 
 **Illumina Sequencing (FASTQ format) Files(s):**
 
@@ -108,21 +101,29 @@ mv HLE_Cd_1_forward_fastqc.zip raw_fastqc/
 <a name="clean"></a>
 ## Data Cleaning
 
+Before we start to compute on the data, let's make sure we are on a compute node.
+
+```Bash
+# request an interactive node on the cluster with 2G that will run for 24 hours
+salloc --mem=2G --time=24:00:00 --partition=classroom
+srun --pty bash
+```
+
 Even if the data as a whole passed FASTQC, quality trimming and filtering is still highly recommended to remove or trim individual sequences of poor quality. Run *Trimmomatic* (paired-end with separate input files, plus ILLUMINACLIP with TruSeq3 for paired-end MiSeq or HiSeq) on all the samples. For example:
 
 ```bash
 # create directory to store trimmed data in
 mkdir trimmomatic
 # run trimmomatic in paired-end mode
-trimmomatic PE -threads 1 \ # uses a single thread
-HLE_Cd_1_forward.fastq.gz \ # input fastq forward
-HLE_Cd_1_reverse.fastq.gz \ # input fastq reverse
-trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \ # output paired fastq forward
-trimmomatic/HLE_Cd_1_forward_trimmed_unpaired.fq.gz \ # output unpaired fastq forward
-trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \ # output paired fastq reverse
-trimmomatic/HLE_Cd_1_reverse_trimmed_unpaired.fq.gz \ # output unpaired fastq reverse
-ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:8:True \ # trims adapter
-SLIDINGWINDOW:4:20 # trims low quality bases
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.sif trimmomatic PE -threads 1 \
+    HLE_Cd_1_forward.fastq.gz \
+    HLE_Cd_1_reverse.fastq.gz \
+    trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \ 
+    trimmomatic/HLE_Cd_1_forward_trimmed_unpaired.fq.gz \ 
+    trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \ 
+    trimmomatic/HLE_Cd_1_reverse_trimmed_unpaired.fq.gz \ 
+    ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:8:True \
+    SLIDINGWINDOW:4:20 
 ```
 
 `ILLUMINACLIP:TruSeq3-PE.fa:2:30:10` removes the adapters for Illumina TruSeq3 sequencing which is the method used to generate these data. 
@@ -145,7 +146,7 @@ Perform *HISAT2* read mapping for each sample, using the reference files you jus
 ```bash
 mkdir hisat2
 # run HISAT2 to align reads to reference genome
-hisat2 --add-chrname -x /workspace/lab/studentlab/lab7_rnaseq/references/grch38/genome \
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab7_rnaseq/scripts/hisat2.sif --add-chrname -x /workspace/lab/studentlab/lab7_rnaseq/references/grch38/genome \
 -1 trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \
 -2 trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \
 -S hisat2/HLE_Cd_1.sam
@@ -162,7 +163,7 @@ rm hisat2/HLE_Cd_1.sam
 
 Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out*.
 
-**Problem #2. STAR creates a BAM file that contains the alignment information. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
+**Problem #2. HISAT2 creates a BAM file that contains the alignment information. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
 
 <a name="transcripts"></a>
 ## Transcript Assembly
@@ -175,7 +176,7 @@ Perform *featureCounts* on each replicate's *HISAT2* BAM file, using the *gencod
 # create new output directory
 mkdir feature_counts
 # run feature counts 
-featureCounts -p -a /workspace/lab/studentlab/lab7_rnaseq/references/gencode.v29.annotation.gtf \
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab7_rnaseq/scripts/feature-counts_v2.0.0.sif featureCounts -p -a /workspace/lab/studentlab/lab7_rnaseq/references/gencode.v29.annotation.gtf.gz \
 -o feature_counts/HLA_Cd_1_feature_counts.txt \
 -s 2 \
 hisat2/HLE_Cd_1.bam
