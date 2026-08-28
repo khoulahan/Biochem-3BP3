@@ -18,6 +18,11 @@ The goal of this lab is to walk through a typical DNA alignment and variant dete
 * *sequencing alignment map (SAM/BAM)*
 * *variant calling format (VCF)*
 
+**Demo Videos**
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+* [Viewing FASTQC Results](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQCDQp8AuxWwTbQblBHpQmidAcPwmwdYdprqX7dhEixl2Fk?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=fNC7WY) ~3 minutes
+* [Submitting to Slurm](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQAmpCiUipYAQ4oNEQRFXhLxAe2xC2hnFuVGnkMGDs1Y7eM?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=diY7N6) ~5 minutes
+
 **Computer Resources**
 * Today’s lab will use the cluster. **Reminder:** to log onto the cluster you must be on the McMaster network or VPN. 
 
@@ -63,7 +68,16 @@ As before, run the below commands off the symlinks.
 <a name="quality"></a>
 ## Quality control
 
-As we did in lab 5, we are going to use FASTQC to determine the quality of our data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y).
+Before we start to compute on the data, let's make sure we are on a compute node. We can do this by logging onto an interactive node as we did in lab 2 and 5. 
+
+
+```Bash
+# request an interactive node on the cluster with 2G that will run for 24 hours
+salloc --mem=2G --time=24:00:00 --partition=classroom
+srun --pty bash
+```
+
+As we did in lab 5, we are going to use FASTQC to determine the quality of our data. Details on all the plots can be found here: [FASTQC Documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) and [video tutorial](http://www.youtube.com/watch?v=bz93ReOv87Y). See the demo video for how to view the FASTQC results.
 
 ```bash
 # run fastqc on original fastq files
@@ -71,7 +85,9 @@ fastqc SRR8619134_1.fastq.gz
 fastqc SRR8619134_2.fastq.gz
 ```
 
-**Question #1. Is your data high quality? Why or why not? Would you run any trimming or filtering? Why or why not?**
+**Question #1. What is the quality of your data? Is there any evidence that the sequence library is biased (i.e. non-random)? Explain your reasoning.**
+
+**Question #2. Is there any evidence that the reads still have their adapters? Do we need to trim the adapters?**
 
 <a name="alignment"></a>
 ## Alignment 
@@ -80,16 +96,9 @@ fastqc SRR8619134_2.fastq.gz
 
 Next, we need to figure out where each sequencing read comes from in the genome. To do this, we are going to align our sequencing reads to the human reference genome. In this case, we are going to use [GRCh38](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.26/).
 
-To align the reads to the reference, we are going to use `BWA MEM`. The reference and its indices can be found `/workspace/lab/studentlab/lab6_genome_variants/GRCh38/GRCh38.d1.vd1.fa`. 
+To align the reads to the reference, we are going to use `BWA MEM`. The reference and its indices can be found `/workspace/lab/studentlab/lab6_genome_variants/GRCh38/GRCh38.d1.vd1.fa`. This is going to take a while so it is highly recommended to submit this command to Slurm by creating a sbatch script (see demo video).
 
 ```Bash
-# make a directory to save your data
-mkdir alignment
-# we can make a symlink to of the fastq files within our alignment directory
-ln -s SRR8619134_1.fastq.gz alignment/SRR8619134_1.fastq.gz
-ln -s SRR8619134_2.fastq.gz alignment/SRR8619134_2.fastq.gz
-# move into the alignment directory
-cd alignment
 # run alignment using bwa mem
 bwa mem /workspace/lab/studentlab/lab6_genome_variants/GRCh38/GRCh38.d1.vd1.fa SRR8619134_1.fastq.gz SRR8619134_2.fastq.gz > SRR8619134.sam
 ```
@@ -103,7 +112,17 @@ samtools sort SRR8619134.sam -O BAM -o SRR8619134.sort.bam
 samtools index SRR8619134.sort.bam
 ```
 
-**Question #2. What is the file size of the original SAM file? How does it compare to the binary BAM file?**
+samtools fastq -1 output_R1.fastq.gz -2 output_R2.fastq.gz \
+    -0 /dev/null -s /dev/null -n sorted_by_name.bam
+
+**Question #3. What is the file size of the original SAM file? How does it compare to the binary BAM file?**
+
+Once you have your `BAM` you can delete your `SAM` file to save storage space. They both include the same data but the `BAM` file is more compressed.
+
+```Bash
+# remove SAM file
+rm SRR8619134.sam
+```
 
 Let's look to see how well our data aligned to the reference genome using `flagstat`. To understand how to interpret the output the flagstat command, check out the [documentation](https://www.htslib.org/doc/samtools-flagstat.html).
 
@@ -113,7 +132,7 @@ samtools flagstat SRR8619134.sort.bam
 
 **Problem #1. Do you have a high quality alignment? Consider what proportion of reads are mapping and whether they are mapping in the expected alignment with their mate.**
 
-**Problem #2. Why do not all reads align? Provide some possible explainations.**
+**Problem #2. Why do not all reads align? Provide some possible explanations.**
 
 <a name="variant"></a>
 ## Variant Calling
@@ -135,13 +154,12 @@ bcftools mpileup \
 bcftools stats variants.vcf.gz > variants_stats.txt
 ```
 
-**Question #3. How many SNPs did you detect? Is this what you would expect? What evidence supports each variant?**
+**Question #4. How many SNPs did you detect? Is this what you would expect? What evidence supports each variant?**
 
 Not all variants may be real SNPS. We often need to apply additional filtering to reduce false positives in our calls. There are a few criteria we can implement to enrich for high confidence SNP calls:
-* Filter out SNPs with insufficient sequencing reads at the site
-* Filter out SNPs at sites with low mapping quality at site
-* Filter out SNPs with low genotyping quality
-* Restrict SNPs to only exon regions
+* Filter out SNPs with insufficient sequencing reads at the site (e.g. `INFO/DP<10`)
+* Filter out SNPs at sites with low mapping quality at site (e.g. `INFO/MQ<40`)
+* Filter out SNPs with low genotyping quality (e.g. `QUAL<30`)
 
 ```Bash
 # index variants
@@ -156,9 +174,9 @@ bcftools view \
     variants.vcf.gz
 ```
 
-**Problem #3. Why is it important to include the `-R exome.bed` parameter?**
+**Question #5. Why is it important to include the `-R exome.bed` parameter?**
 
-**Question #4. How many SNPs are detected after filtering? How many were filtered out by our depth filter? By our quality filter? By the genotyping confidence filter?**
+**Question #6. How many SNPs are detected after filtering? How many were filtered out by our depth filter? By our quality filter? By the genotyping confidence filter?**
 
 <a name="annotation"></a>
 ## Annotation
@@ -167,7 +185,7 @@ There are multiple tools we can use to annotate our SNPs to determine which gene
 
 ```Bash
 # annotate variants
-java -jar snpEff.jar hg38 variants_filtered.vcf.gz > variants_annotated.vcf
+java -jar /opt/COMMON_APPLICATIONS/snpEff/snpEff.jar GRCh38.mane.1.0.ensembl variants_filtered.vcf.gz > variants_annotated.vcf
 ```
 
 We can reformat the vcf to extract gene names and extract all variants predicted to be high impact.
@@ -181,6 +199,6 @@ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/ANN\n' \
     awk -F'\t' '{split($5,a,"|"); print $1,$2,$3,$4,a[4]}' OFS='\t' > high_impact_genes.txt
 ```
 
-**Problem #4. What variant(s) could be responsible for the tumour that the cell line was derived from? Justify your answer.**
+**Problem #3. What variant(s) could be driving the tumour that the cell line was derived from? Justify your answer.**
 
-To help narrow down possible candidates, take a look at `parse_vcf.R` for an example R script for dealing with VCFs. You may also want to consider `Cosmic_breast_genes.txt` which provides a list of possible driver genes in breast cancer. 
+You may also want to consider `/workspace/lab/studentlab/lab6_genome_variants/Cosmic_breast_genes.txt` which provides a list of possible driver genes in breast cancer. 
