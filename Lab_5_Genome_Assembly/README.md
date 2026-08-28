@@ -271,7 +271,7 @@ apptainer run /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.s
     ILLUMINACLIP:TruSeq2-PE.fa:2:30:10:8:True SLIDINGWINDOW:4:20 
 ```
 
-Unicycler has powerful defaults, so perform the Unicycler assembly using the trimmed fastqs and without changing any of the parameters:
+Unicycler has powerful defaults, so perform the Unicycler assembly using the trimmed fastqs and without changing any of the parameters. *Note* unicycler will take a while to run. Recommend submitting this as a job to Slurm so it can run in the background.
 
 ```bash
 apptainer run /workspace/lab/studentlab/lab5_genome_assembly/unicycler_v4.9.1.sif unicycler \
