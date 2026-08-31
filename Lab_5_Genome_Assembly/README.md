@@ -261,7 +261,7 @@ First, we will use the TRIMMOMATIC tool to perform quality trimming on our data.
 ```bash
 mkdir trimmomatic
 # run trimmomatic in paired-end mode
-apptainer run /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.sif trimmomatic PE \
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.sif trimmomatic PE \
     -threads 1 \
     Salmonella_3185_TACGAATC_L003_R1_001.fastq.gz  \
     Salmonella_3185_TACGAATC_L003_R2_001.fastq.gz \
@@ -275,7 +275,7 @@ apptainer run /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.s
 Unicycler has powerful defaults, so perform the Unicycler assembly using the trimmed fastqs and without changing any of the parameters. *Note* unicycler will take a while to run. Recommend submitting this as a job to Slurm so it can run in the background.
 
 ```bash
-apptainer run /workspace/lab/studentlab/lab5_genome_assembly/unicycler_v4.9.1.sif unicycler \
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab5_genome_assembly/unicycler_v4.9.1.sif unicycler \
     -t 1 \
     -1 trimmomatic/Salmonella_forward_trimmed_paired.fq.gz \
     -2 trimmomatic/Salmonella_reverse_trimmed_paired.fq.gz \
