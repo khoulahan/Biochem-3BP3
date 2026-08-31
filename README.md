@@ -55,9 +55,9 @@ https://academiccalendars.romcmaster.ca/preview_course_nopop.php?catoid=24&coid=
 ## Flash Updates
 
 WEEK 3 - Tidyverse, Wide vs Long Data, Boxplots, Linux
-* **Tidyverse**
-* **Wide vs Long Data**
-* **Boxplots**
+* **Tidyverse**. Introduce the [tidyverse R package](https://tidyverse.org/) and explain the benefit of using it to write R code.
+* **Wide vs Long Data**. Introduce the difference between wide and long data and give examples of situations where you may want one format over another.
+* **Boxplots**. Introduce what a [boxplot](https://www.atlassian.com/data/charts/box-plot-complete-guide) is and its components. Discuss what types of data you would want to visualize with a boxplot. 
 * **Linux**. Introduce the concept of the operating systems (Windows, Mac, “command line”). Give a brief history of the origins of UNIX and how it differs from LINUX. See [What is Linux](http://www.linuxfoundation.org/what-is-linux), [Differentiating UNIX and Linux](https://developer.ibm.com/articles/au-unix-difflinux/), and [Difference between Unix and Linux](https://www.geeksforgeeks.org/linux-vs-unix/).
 
 WEEK 4 - BLAST, Pfam, PROSITE, FASTA
@@ -70,32 +70,32 @@ WEEK 5 - Terminology, Sequence Alignment, Phylogenetic Trees, Slurm
 * **Terminology**. Explain the difference between the terms “similarity” and “homology”. Differentiate between the terms “homolog”, “paralog”, “ortholog”. See *Annu Rev Genet.* 2005;39:309-38 [PMID 16285863](https://pubmed.ncbi.nlm.nih.gov/16285863) and [BLAST Glossary](http://www.ncbi.nlm.nih.gov/books/NBK62051/).
 * **Sequence Alignment**. Explain the difference between local alignment (e.g. BLAST) and global alignment (e.g. CLUSTAL) and introduce the CLUSTAL family of algorithms. See *Protein Sci.* 2018 Jan;27(1):135-145 [PMID 28884485](https://pubmed.ncbi.nlm.nih.gov/28884485).
 * **Phylogenetic Trees**. Overview what a phylogenetic tree represents and the major concepts for its interpretation. See [*Nature Education* 1: 190](http://www.nature.com/scitable/topicpage/reading-a-phylogenetic-tree-the-meaning-of-41956) and [How to read a phylogenetic tree](https://artic.network/how-to-read-a-tree.html).
-* **Slurm**
+* **Slurm**. Introduce what [Slurm](https://slurm.schedmd.com/overview.html) is and its components. Discuss some basic usage and the value of having a scheduler such as Slurm to support computational research. 
 
 WEEK 7 - Illumina Sequencing, FASTQ, N50
 * **Illumina Sequencing**. Review the Illumina DNA sequencing method, see [DNA Sequencing: How to Choose the Right Technology](https://frontlinegenomics.com/dna-sequencing-how-to-choose-the-right-technology/) and [Explore Illumina sequencing technology](http://www.illumina.com/technology/next-generation-sequencing/sequencing-technology.html). *Note: you may use images from the “Illumina Sequencing Introduction” PDF).*
 * **FASTQ**. Introduce the FASTQ file format, review how it was developed for Next-Generation Sequencing (NGS). Review the concept of base calling quality and how it is encoded in FASTQ. *Nucleic Acids Res.* 2010 38:1767-71 [PMID 20015970](https://pubmed.ncbi.nlm.nih.gov/20015970). *Note: We will be handling recent Illumina FASTQ data, which uses an offset of 33, see https://en.wikipedia.org/wiki/FASTQ_format.*
-* **N50**
+* **N50**. Introduce what the N50 value is and what is measures. *Genomics* 2010 95:15-327 [PMID 20211242](https://www.sciencedirect.com/science/article/pii/S0888754310000492?via%3Dihub). Discuss some of the limitations of the value.
 
 WEEK 8 - SNPs, BAM/SAM, VCF
 * **SNPs**. Define the term Single Nucleotide Polymorphism (SNP) and explain how these data can be used to determine organism/strain relatedness. Use SARS-CoV-2 as an example, see *Microbiol Spectr*. 2023 Jun 15;11(3):e0190022 [PMID 37093060](https://pubmed.ncbi.nlm.nih.gov/37093060) and [Phylogenetic Analysis of SARS-CoV-2 in Ontario](https://www.publichealthontario.ca/en/Data-and-Analysis/Infectious-Disease/COVID-19-Data-Surveillance/Nextstrain).
-* **BAM/SAM**
-* **VCF**
+* **BAM/SAM**. Provide an overview of the BAM/SAM file format, when it is used and how to read it, see https://samtools.github.io/hts-specs/SAMv1.pdf. 
+* **VCF**. Provide an overview of VCF file format, when it is used and how to read it, see https://gatk.broadinstitute.org/hc/en-us/articles/360035531692-VCF-Variant-Call-Format
 
 WEEK 9 - RNA-Seq, False Discovery, PCA
 * **RNA-Seq**. Overview the steps in RNA-Seq analysis of transcriptomes. See *Nat Rev Genet.* 10:57-63. [PMID 19015660](https://pubmed.ncbi.nlm.nih.gov/19015660) and [Study gene expression using RNA sequencing](https://www.illumina.com/techniques/sequencing/rna-sequencing.html).
 * **False Discovery**. Introduce the concept of the false discovery rate and how it is handled in genomic analyses. See *Proc Natl Acad Sci USA*. 100: 9440-5. [PMID 12883005](https://pubmed.ncbi.nlm.nih.gov/12883005) and [P-values, False Discovery Rate (FDR) and q-values](http://www.nonlinear.com/support/progenesis/comet/faq/v2.0/pq-values.aspx).
-* **PCA**
+* **PCA**. Provide an overview on PCA, why it is useful and some example contexts where it may be used. See [*Nature Biotechnology* 2008 26:303-304](https://www.nature.com/articles/nbt0308-303)
 
 WEEK 10 - Tn5 Transposase, Peak calling, Histone modifications
-* **Tn5 Transposas**
-* **Peak Calling**
-* **Histone Modifications**
+* **Tn5 Transposase**. Introduce Tn5 transposases and their use in tagentation during library prep for sequencing methods designed to measure open chromatin, such as ATAC-seq. See *Genome Biology* 2010 11:R119 [PMID 21143862](https://link.springer.com/article/10.1186/gb-2010-11-12-r119)
+* **Peak Calling**. Provide an overview of peak calling when analyzing ChIP-Seq data. Describe the process, why it is important and what makes it challening. See *Nat Rev Genetics* 2009 10:669-680 [PMID 19736561](https://www.nature.com/articles/nrg2641) for an overview on ChIP-seq and *Genome Biology* 2008 9:R137 [PMID 18798982](https://link.springer.com/article/10.1186/gb-2008-9-9-r137) for a description of one of the most common peak calling algorithms. 
+* **Histone Modifications** Provide an overview on histones, their common modifications and the impact they have on transcription regulation. See *Cell* 2007 128:693-705 [PMID 17320507](https://www.sciencedirect.com/science/article/pii/S0092867407001845?via%3Dihub)
 
 WEEK 11 - CpG Islands, Bisulfite Conversion, DMRs
-* **CpG Islands**
-* **Bisulfite Conversion**
-* **DMRs**
+* **CpG Islands**. Provide an overview of CpG Islands and what their role is in gene transcription. Discuss why we may want to be able to profile them. See *Nature* 1986 321:209-213 [PMID 2423876](https://www.nature.com/articles/321209a0)
+* **Bisulfite Conversion**. Describe the process of bisulfite conversion, why it is used and what some of the limitations are. See *PNAS* 1992 89:1827-1831 [PMID 1542678](https://www.pnas.org/doi/10.1073/pnas.89.5.1827?url_ver=Z39.88-2003&rfr_id=ori%3Arid%3Acrossref.org&rfr_dat=cr_pub++0pubmed)
+* **DMRs**. Discuss what differentially methylated regions (DMRs) are, why we may want to identify them and the process to identify them. See *Nature Genetics* 2009 41:178–186 [PMID 19151715](https://www.nature.com/articles/ng.298) and *Briefings in Functional Genomics* 2016 15:485–490 [PMID 27323952](https://academic.oup.com/bfg/article/15/6/485/2555348)
 
 WEEK 12 - Random Forest, Logistic Regression, Natural Language Processing
 * **Random Forest**. Provide an overview of the Random Forest method for classification of complex data. see [An Introduction to Random Forest](https://towardsdatascience.com/random-forest-3a55c3aca46d), *Proc Natl Acad Sci U.S.A.* 115:1690-1692 [PMID 29440440](https://pubmed.ncbi.nlm.nih.gov/29440440), and *Front Genet.* 9:297 [PMID 30123241](https://pubmed.ncbi.nlm.nih.gov/30123241).
