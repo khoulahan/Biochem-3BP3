@@ -141,12 +141,14 @@ Before we can interpret these data, we need to map the FASTQ reads to the refere
 
 The first step is download the [reference files](https://daehwankimlab.github.io/hisat2/download/) required by *HISAT2*. This step has already been done for you. The data can be found `/workspace/lab/studentlab/lab7_rnaseq/references/grch38`.
 
-Perform *HISAT2* read mapping for each sample, using the reference files you just downloaded. The command is provided below, however, please submit as a job to slurm. **Do not run on head node.** It is recommended to run the alignment with 6GB of memory requested. As a reminder of how to create a *sbatch script* please refer back to Lab 1. 
+Perform *HISAT2* read mapping for each sample, using the reference files you just downloaded. The command is provided below, however, please submit as a job to slurm. **Do not run on head node.** It is recommended to run the alignment with 6GB of memory requested. As a reminder of how to create a *sbatch script* please refer back to Lab 1. Also specifically for hisat2 you will have to load the module in advance using the command `module load hisat2_2.2.3` in your sbatch script.
 
 ```bash
 mkdir hisat2
+# for hisat2 we need to load it 
+module load hisat2_2.2.3
 # run HISAT2 to align reads to reference genome
-apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab7_rnaseq/scripts/hisat2.sif --add-chrname -x /workspace/lab/studentlab/lab7_rnaseq/references/grch38/genome \
+hisat2 --add-chrname -x /workspace/lab/studentlab/lab7_rnaseq/references/grch38/genome \
 -1 trimmomatic/HLE_Cd_1_forward_trimmed_paired.fq.gz \
 -2 trimmomatic/HLE_Cd_1_reverse_trimmed_paired.fq.gz \
 -S hisat2/HLE_Cd_1.sam
