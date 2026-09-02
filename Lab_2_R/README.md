@@ -291,7 +291,7 @@ Note: the `!` symbol can be handy if you want the opposite. For example, if we w
 low_esr1_samples <- rownames(rna)[!high_esr1]
 ```
 
-**Problem 1. There are three subtypes of breast cancer. Which subtype an individual develops influences their treatment protocol. The three subtypes are ER+ (defined by the presence of the estrogen receptor, encoded by *ESR1*), HER2+ (defined by the presence of HER2, encoded by *ERBB2*) and triple negative (defined by the absence of both ER and HER2). Based on just *ESR1* and *ERBB2* abundance, assign each sample to one of the three subtypes. Justify your decision.**
+**Problem 1. There are three subtypes of breast cancer. Which subtype an individual develops influences their treatment protocol. The three subtypes are ER+ (defined by the presence of the estrogen receptor, encoded by *ESR1*), HER2+ (defined by the presence of HER2, encoded by *ERBB2*) and triple negative (defined by the absence of both ER and HER2). Based on just *ESR1* and *ERBB2* abundance, assign each sample to one of the three subtypes. How many samples are assigned as ER+, HER2+ and triple negative? Explain how you defined each subtype.**
 
 <a name="plot"></a>
 ## Plotting
