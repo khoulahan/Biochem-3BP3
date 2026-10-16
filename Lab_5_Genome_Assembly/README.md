@@ -243,7 +243,7 @@ Watch the demo video above on how to look at your fastqc results.
 
 **Question #11. In your *Salmonella* data, at what position along the reads does the mean quality fall below Q20? Is it the same for both the forward and reverse reads?**
 
-**Problem #12. After reading the documentation on the FASTQC plots, do you think there is any evidence that the sequence library is biased (i.e. non-random)? Explain your reasoning.**
+**Question #12. After reading the documentation on the FASTQC plots, do you think there is any evidence that the sequence library is biased (i.e. non-random)? Explain your reasoning.**
 
 ```bash
 # run fastqc on trimed and quality filtered data
