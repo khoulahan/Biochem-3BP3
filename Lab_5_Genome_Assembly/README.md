@@ -289,7 +289,8 @@ Unicycler will create two main files, one containing the assembly graph and they
 We can also use the **Quast** tool to generate assembly statistics, reading the PDF report to view the assembly statistics:
 
 ```bash
-quast.py unicycler/assembly.fasta \
+apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab5_genome_assembly/quast_v5.3.0.sif quast.py \
+    unicycler/assembly.fasta \
     -t 1 \
     -o unicycler/
 ```
