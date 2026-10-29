@@ -60,7 +60,7 @@ mkdir lab6_genome_variants
 cd lab6_genome_variants
 # create simlinks
 ln -s /workspace/lab/studentlab/lab6_genome_variants/SRR8619134_1.fastq.gz SRR8619134_1.fastq.gz
-ls -s /workspace/lab/studentlab/lab6_genome_variants/SRR8619134_2.fastq.gz SRR8619134_2.fastq.gz
+ln -s /workspace/lab/studentlab/lab6_genome_variants/SRR8619134_2.fastq.gz SRR8619134_2.fastq.gz
 ```
 
 As before, run the below commands off the symlinks.
@@ -111,9 +111,6 @@ samtools sort SRR8619134.sam -O BAM -o SRR8619134.sort.bam
 # index bam file 
 samtools index SRR8619134.sort.bam
 ```
-
-samtools fastq -1 output_R1.fastq.gz -2 output_R2.fastq.gz \
-    -0 /dev/null -s /dev/null -n sorted_by_name.bam
 
 **Question #3. What is the file size of the original SAM file? How does it compare to the binary BAM file?**
 
