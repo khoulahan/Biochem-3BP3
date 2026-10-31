@@ -114,6 +114,8 @@ Even if the data as a whole passed FASTQC, quality trimming and filtering is sti
 ```bash
 # create directory to store trimmed data in
 mkdir trimmomatic
+# ensure there is a symlink to the paired fastq file if you haven't already
+ln -s /workspace/lab/studentlab/lab7_rnaseq/data/HLE_Cd_1_reverse.fastq.gz .
 # run trimmomatic in paired-end mode
 apptainer run -B /workspace/lab:/workspace/lab /workspace/lab/studentlab/lab5_genome_assembly/trimmomatic_v0.40.sif trimmomatic PE -threads 1 \
     HLE_Cd_1_forward.fastq.gz \
