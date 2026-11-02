@@ -163,7 +163,7 @@ Not all variants may be real SNPS. We often need to apply additional filtering t
 tabix variants.vcf.gz 
 # filter variants
 bcftools view \
-    -e 'INFO/DP<10 || INFO/MQ<40 || QUAL<30' \ 
+    -e 'INFO/DP<10 || INFO/MQ<40 || QUAL<30' \
     -v snps \
     -R /workspace/lab/studentlab/lab6_genome_variants/exome.bed \
     -o variants_filtered.vcf.gz \
