@@ -60,7 +60,6 @@ write.table(
     res_nona,
     file = paste0(date, '_deseq2_results.txt'),
     sep = '\t',
-    row.names = FALSE,
     quote = FALSE
     )
 
