@@ -73,7 +73,6 @@ write.table(
     vsdata_matrix,
     file = paste0(date, '_normalized_vst_data.txt'),
     sep = '\t',
-    row.names = FALSE,
     quote = FALSE
     )
 
