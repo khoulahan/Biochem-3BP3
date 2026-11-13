@@ -165,7 +165,7 @@ samtools view -bS hisat2/HLE_Cd_1.sam > hisat2/HLE_Cd_1.bam
 rm hisat2/HLE_Cd_1.sam
 ```
 
-Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out*.
+Finally, we need to assess our alignment. By default, *HISAT2* provides information on alignment to the *standard out* (if the alignment statistics are not in your *standard out*, check the *standard error*).
 
 **Problem #2. HISAT2 creates a BAM file that contains the alignment information. What percentage of read pairs aligned uniquely to one location in the genome and what percentage may represent multiple copy genes? What was the overall alignment rate? Would you say this is a good RNA-Seq data set? Why?**
 
