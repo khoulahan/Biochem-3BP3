@@ -10,9 +10,8 @@
 <a name="intro"></a>
 ## Introduction
 
-The goal of this lab is to build a machine learning classifier to predict breast cancer subtypes based on RNA-Seq data using the public Galaxy platform.
+The goal of this lab is to build a machine learning classifier to predict breast cancer subtypes based on RNA-Seq data using the `caret` package in R.
 
-**Lectures** - [Lecture 10](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lectures/Houlahan_MachineLearning.pptx) Introduction to Machine Learning ([~42 minute video](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/Ed6icPcJcIJKu21HWdkOtZYBlaH28uz29GnlFIFAZvEu9w))
 
 **Flash Updates**
 * *Random Forest* 
