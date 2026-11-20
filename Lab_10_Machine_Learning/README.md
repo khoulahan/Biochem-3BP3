@@ -1,13 +1,11 @@
-## Lab # 10 Machine Learning
+## Lab # 9 Machine Learning
 
 ## Table of Contents
-1. [Introduction](#intro)
-2. [Setting Up](#setup)
-3. [The Problem](#problem)
-4. [Defining Training and Testing Sets](#define)
-5. [Training a Classification Model](#training)
-6. [Evaluating a Classification Model](#testing)
-7. [Tuning Classification Models](#tuning)
+1. [The Problem](#problem)
+2. [Defining Training and Testing Sets](#define)
+3. [Training a Classification Model](#training)
+4. [Evaluating a Classification Model](#testing)
+5. [Tuning Classification Models](#tuning)
 
 <a name="intro"></a>
 ## Introduction
@@ -22,30 +20,21 @@ The goal of this lab is to build a machine learning classifier to predict breast
 * *Natural Language Processing* 
 
 **Demo Videos**
-* [Introduction & Loading Data](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EagU_xmnFD5Pn6lGSYFL448Bw0lRaD6gSFN5av4yrzgaqQ) ~5 minutes
-* [Training the Model](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EYlh8FEw51pPobfSoMDARGkBt0YDnrvruooE4YDScbcqcQ) ~6 minutes
-* [Evaluating the Model](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/mcarthua_mcmaster_ca/EcvyDqeNePtIllnRFp9Ym8UBsansz15AbB3UkQ2FpIwdNA) ~5.5 minutes
+* [Logging onto the Cluster](https://mcmasteru365-my.sharepoint.com/:v:/g/personal/houlahke_mcmaster_ca/IQC2ftW_ZyPVS5qzMttT4FYvAX0pB_x6evXgf2O9YmDjYWI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=WCQxQd) ~2 minutes
+
 
 **Background Reading** (optional)
 * Whalen et al. 2022. Navigating the pitfalls of machine learning in genomics. [Nat Rev Genet. 23:169-81](https://pubmed.ncbi.nlm.nih.gov/34837041/)
 * Thennavan et al. 2021. Molecular analysis of TCGA breast cancer histologic types. [Cell Genomics. 1:100067](https://pubmed.ncbi.nlm.nih.gov/35465400/) 
 
-**Links**
-* http://usegalaxy.org - this lab will be performed using the public Galaxy website, which was introduced in [Lab 6](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_6_Genome_Assembly) and used for RNA-Seq analysis in [Lab 9](https://github.com/agmcarthur/Biochem-3BP3/tree/master/Lab_9_RNASeq)
-
 **Computer Resources**
-* You can complete this entire lab by using your web browser
+* The lab can be completed on the *cluster*. Refer back to Lab 1 and 2 to refresh using command line arguments in Linux and R.
 
 **Grading**
 * Questions are for your learning and are not graded
 * Problems are worth 5 points each (-1 for each error)
 * Submit your answers to the Problems, plus any supplmental multiple choice questions, on **A2L Quizzes** before the deadline
 * An answer key to Questions and Problems will be provided on A2L after the deadline
-
-<a name="qc"></a>
-## Setting Up
-
-Today’s lab will use the public server of the Galaxy project, http://usegalaxy.org, using the account you set up previously. 
 
 <a name="problem"></a>
 ## The Problem
@@ -58,19 +47,32 @@ Breast cancer is a molecularly heterogeneous disease. Treatment decisions are de
 | HER2+ | HER2+ |15-25% |~85% | Anti-HER2 therapy | 
 | Triple Negative (TNBC) | ER- PR- HER2- |20% |77% | Chemotherapy 
 
-We want to build a machine learning model that can differentiate ER+ versus TNBC tumours from transcriptomic profiling data (i.e., RNA-sequencing) to ensure patients receive the most effective treatment.
+In lab 2, you attempted to assign subtypes to each breast tumour by stratifying tumours based on the mRNA abundance of just *ESR1* and *ERBB2*. Now, we are going to get a little more sophisticated. We are going to build a machine learning model that can differentiate ER+ versus TNBC tumours from transcriptomic profiling data (i.e., RNA-sequencing) to ensure patients receive the most effective treatment. 
 
 ### Data
 
-We are going to be use transcriptomic profiling of 48 genes in 848 tumours which have been clinically defined as ER+ or TNBC. The data can be found on GitHub in this Lab 10 folder: [breast_cancer_rna.txt](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lab_10_Machine_Learning/breast_cancer_rna.txt). The data is a tab-delimited file where each row corresponds to a tumour and the columns correspond to either the sample ID (`CLID`), the subtype of the tumour (`subtype`) or the mRNA abundance of a gene (e.g., `EGFR`). Here the subtype is encoded as a binary variable where `1 = TNBC` and `0 = ER+`. Use the upload tool to add these data to Galaxy:
+As in lab 2, we are going to be use transcriptomic profiling of 48 genes in 848 tumours which have been clinically defined as ER+ or TNBC. The data can be found in `/workspace/lab/studentlab/lab2_R/breast_cancer_rna.txt`.
 
-![upload](./figures/upload.png)
+The data is a tab-delimited file where each row corresponds to a tumour and the columns correspond to either the sample ID (`CLID`), the subtype of the tumour (`subtype`) or the mRNA abundance of a gene (e.g., `EGFR`). Here the subtype is encoded as a binary variable where `1 = TNBC` and `0 = ER+`. As before, let's start by reading in the data into R. Remember to first log onto an interactive node before launching R. 
 
-Here is a glimpse of the data:
 
-![upload](./figures/rawdata.png)
+```Bash
+# request an interactive node on the cluster with 2G that will run for 24 hours
+salloc --mem=2G --time=24:00:00 --partition=classroom
+srun --pty bash
+```
 
-**Problem #1. Is the dataset balanced (ER+ versus TNBC)? What do we need to consider when training a model on this dataset?** (hint: try the **Histogram** or **Count** tools)
+Launch R and read in data.
+
+```R
+library(tidyverse)
+library(caret)
+
+# read in file
+rna <- read_tsv("/workspace/lab/studentlab/lab2_R/breast_cancer_rna.txt")
+```
+
+**Problem #1. Is the dataset balanced (ER+ versus TNBC)? What do we need to consider when training a model on this dataset? (hint: look up the `table()` command in R)**
 
 <a name="define"></a>
 ## Defining Training and Testing Sets
@@ -79,13 +81,25 @@ First, we want to set our training and testing cohorts. Here we are going to use
 
 **Question #1. Here we are leaving out 20% of the data as a test set. What is another validation method could we use to evaluate our model?**
 
-Use the **Split Data** tool to create the train and test partitions:
+```R
+# set your own random seed here by replacing the x's with a random set of numbers 
+set.seed(xxx)
 
-![upload](./figures/step1_data_split.png)
+# make sure treats subtype as binary, set as factor
+rna$subtype <- as.factor(rna$subtype)
+
+# split data into train and test 
+train_index <- createDataPartition(
+    rna$subtype,
+    p = 0.80
+    )
+train_data <- rna[train_index[[1]],]
+test_data <- rna[-train_index[[1]],]
+```
 
 **Note:** Set a random seed. Some steps in machine learning are random and leverage random number generators. For example, randomly splitting cohort into training and testing sets. To ensure someone else can reproduce your analyses, it is important that this randomness is reproducible. You can set a random seed to ensure random number generators are initialized the same way each time. This will ensure even the randomness is reproducible.
 
-**Problem #2. What is the ratio of ER versus TNBC tumours in the training dataset? What is the ratio in the testing dataset? How would this differ if we used the non-stratified shuffle strategy?**
+**Question #2. What is the ratio of ER versus TNBC tumours in the training dataset? What is the ratio in the testing dataset? How would this differ if we used the non-stratified shuffle strategy?**
 
 > Flash Update - Logistic regression
 
@@ -96,57 +110,71 @@ We are going to build a classifier using a logistic regression model. A logistic
 
 Train a logistic regression model on the training dataset using the **Generalized Linear Models** tool. Keep in mind **not** to include the sample IDs (e.g. TCGA-XX-XXXX-XX) as a feature in the dataset as we want to train the model to predict subtype based on the mRNA abundance of the 48 genes only.
 
-**Note:** Reminder to set the random seed in the **Advanced Options** to ensure reproducibility.
+We are using the `caret` package in R (which was designed to mirror `scikit-learn ` in python). The caret package allows us to set up our train/test data as well as our cross validation strategy and then we can test multiple machine learning models with the same training infrastructure. Here, we are going to set up a simple 5-fold cross validation strategy.
 
-![upload](./figures/step2_training1.png)
+```R
+set.seed(xxx)
+# set up cross validation strategy
+cv_strategy <- trainControl(
+    method = "cv",
+    number = 5
+    )
+# fit logistic regression
+log_fit1 <- train(
+    subtype ~ ., 
+    data = train_data[,-1], # removing the first column
+    method = "LogitBoost",
+    trControl = cv_strategy
+    )
+```
 
-In this section, we select the genes as these are the data powering the model to classify cancers:
-
-![upload](./figures/step2_training2.png)
-
-In this section, we select *subtype* as the binary value to classifying new data (1 indicates a TNBC tumour, 0 indicates it a ER+ tumour):
-
-![upload](./figures/step2_training3.png)
-
-**Question #2. What would happen if we accidentally left the sample ids as a feature in the model training?**
+**Question #3. What would happen if we accidentally left the sample ids as a feature in the model training?**
 
 <a name="testing"></a>
 ## Evaluating a Classification Model
 
-Now that we have trained our model on our training set, we want to test it on the held-out 20% test set using the **Evaluate a Fitted Model** tool. Remember to remove the sample ID and subtype columns when predicting on the test set.
+Now that we have trained our model on our training set, we want to test it on the held-out 20% test. Remember to remove the sample ID and subtype columns when predicting on the test set.
 
-![upload](./figures/step3_testing1.png)
+```R
+# predict on held out data 
+log_preds <- predict(
+    log_fit1, 
+    newdata = test_data[,-c(1:2)],
+    type = 'raw'
+    )
+# calculate confusion matrix
+confusionMatrix(
+    data = log_preds,
+    reference = test_data$subtype,
+    positive = '1',
+    mode = "prec_recall"
+)
+```
 
-In this section, we select the genes as these are the data the model is evaluating to classify the cancer samples:
+**Question #4. What is the accuracy of your model?**
 
-![upload](./figures/step3_testing2.png)
+**Problem #2. Is accuracy the best metric to use to evaluate your model? What other metrics would you calculate? How do the additional metrics compare to accuracy? If they differ, why?**
 
-We are evaluating accuracy, so we need to compare our model's predictions against the clinical *subtype* labels:
-
-![upload](./figures/step3_testing3.png)
-
-**Question #3. What is the accuracy of your model?**
-
-**Problem #3. Is accuracy is best metric to use to evaluate your model? What other metrics would you calculate? Do you think this is a good model?** (hint: try adding the additional scoring metrics using the `Additional scoring used in multi-metric mode` dropdown, you can review them [here](https://www.evidentlyai.com/classification-metrics/accuracy-precision-recall))
-
-**Question #4. How do the additional metrics compare to accuracy? If they differ, why?**
+**Question #5. How do your machine learning predictions compare to your subtype assignments in Lab 2?**
 
 > Flash Update - Random Forest
 
 <a name="tuning"></a>
 ## Tuning Classification Models
 
-Of course, logistic regression is not the only classification model available. Try training and testing one other classification algorithm using the same steps outlined above.
+Of course, logistic regression is not the only classification model available. Try training and testing one other classification algorithm using the same steps outlined above but changing the `method` in the training step. Check out the `caret` [documentation](https://topepo.github.io/caret/train-models-by-tag.html) to find all the possible models caret supports.
 
-**Question #5. Which classification algorithm did you choose and why? How did its performance compare to logistic regression?**
+**Question #6. Which classification algorithm did you choose and why? How did its performance compare to logistic regression?**
 
 <a name="prediction"></a>
 ## Predicting on Microarray Data
 
 Comprehensively evaluating model performance requires testing the model on a completely unseen cohort. This evaluation more accurately reflects the anticipated performance when the model is applied in a real-world setting. **You should never look at the performance of the model on this cohort before picking a final model.**
 
-In our case, we are going to apply our model, trained on RNA-sequencing, to predict the breast cancer subtype of an independent cohort of 1,733 tumours profiled with microarrays. The mRNA abundance of the same 48 genes have been measured. The data can be found on GitHub in the Lab 10 folder: [breast_cancer_microarray_prediction.txt](https://github.com/agmcarthur/Biochem-3BP3/blob/master/Lab_10_Machine_Learning/breast_cancer_microarray_prediction.txt). The data is a tab-delimited file where each row corresponds to a tumour and the columns correspond to either the sample ID (`CLID`), the subtype of the tumour (`subtype`) or the mRNA abundance of a gene (e.g. `EGFR`). Again, here the subtype is encoded as a binary variable where `1 = TNBC` and `0 = ER+`.
+In our case, we are going to apply our model, trained on RNA-sequencing, to predict the breast cancer subtype of an independent cohort of 1,733 tumours profiled with microarrays. The mRNA abundance of the same 48 genes have been measured. The data can be found: `/workspace/lab/studentlab/lab9_machine_learning/breast_cancer_microarray_prediction.txt`.
+
+The data is a tab-delimited file where each row corresponds to a tumour and the columns correspond to either the sample ID (`CLID`), the subtype of the tumour (`subtype`) or the mRNA abundance of a gene (e.g. `EGFR`). Again, here the subtype is encoded as a binary variable where `1 = TNBC` and `0 = ER+`.
 
 Using the same approach as outlined in `Evaluating a Classification Model`, evaluate your final prediction model (either the logistic regression model or the model you trained in `Tuning Classification Models`) on the independent microarray data.
 
-**Problem #4. How well did your model perform on the microarray data? What are some factors that may influence model performance?**
+**Problem #3. How well did your model perform on the microarray data? What are some factors that may influence model performance?**
