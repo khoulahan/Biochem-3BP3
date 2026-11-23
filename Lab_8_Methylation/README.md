@@ -259,7 +259,7 @@ dev.off()
 If you are running this lab on the cluster, in order to look at the plot you just created you will need to copy it to your local machine. To do so, in the terminal on your local machine run: 
 
 ```bash
-scp macid@acf-access-student.csu.mcmaster.ca:/workspace/lab/macid/lab9_methylation/2026_pca_sentrixpos.png .
+scp macid@acf-access-student.csu.mcmaster.ca:/workspace/lab/macid/lab8_methylation/2026_pca_sentrixpos.png .
 ```
 
 Next we are going to look at the **Sentrix ID**. The Sentrix ID tells us which chip the sample has hybridized. This will allow us to determine if there are any biases by chip.
