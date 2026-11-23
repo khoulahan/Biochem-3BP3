@@ -56,6 +56,10 @@ Before we start to compute on the data, let's make sure we are on a compute node
 ```Bash
 # request an interactive node on the cluster with 10G that will run for 24 hours
 salloc --mem=10G --time=24:00:00 --partition=classroom
+```
+
+```Bash
+# log onto the interactive node
 srun --pty bash
 ```
 
